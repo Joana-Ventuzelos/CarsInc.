@@ -166,6 +166,18 @@
                         </div>
                     </main>
 
+                    <div class="mt-10 flex justify-center space-x-6">
+                        <a href="{{ url('/car') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                            Cars
+                        </a>
+                        <a href="{{ url('/rental') }}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                            Rentals
+                        </a>
+                        <a href="{{ url('/users') }}" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+                            Users
+                        </a>
+                    </div>
+
                     <footer class="py-16 text-center text-sm text-black dark:text-white/70">
                         Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
                     </footer>

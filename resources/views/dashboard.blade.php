@@ -27,10 +27,21 @@
                         <input type="text" id="pickup" name="pickup" required
                             class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                         <button type="submit"
-                            class="bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 text-white font-medium text-base md:text-lg rounded-full px-8 py-3 shadow-md hover:shadow-lg transition duration-300">
+                            class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
                             Enviar confirmação por e-mail
                         </button>
                     </form>
+                </div>
+                <div class="max-w-sm mx-auto p-5 mt-6 flex justify-around space-x-4">
+                    <a href="{{ url('/car') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                        Cars
+                    </a>
+                    <a href="{{ url('/rental') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                        Rentals
+                    </a>
+                    <a href="{{ url('/users') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                        Users
+                    </a>
                 </div>
             </div>
         </div>
