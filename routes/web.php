@@ -3,6 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReservationConfirmationMailController;
+use App\Http\Controllers\CarController;
+use App\Http\Controllers\RentalController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -21,5 +26,14 @@ Route::middleware('auth')->group(function () {
 Route::post('/enviar-email', [ReservationConfirmationMailController::class, 'sendReservationEmail'])
     ->middleware('auth')
     ->name('send.email');
+Route::resource('users', UserController::class);
+Route::resource('car', CarController::class);
+Route::resource('rental', RentalController::class);
+Route::resource('review', ReviewController::class);
+Route::resource('payment', PaymentController::class);
 
 require __DIR__.'/auth.php';
+
+
+
+

@@ -45,4 +45,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    /**
+     * Get the attributes that should be appended to the model's array form.
+     *
+     * @return list<string>
+     */
 }
