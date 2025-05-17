@@ -3,7 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Car;
+use App\Models\Rental;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +14,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Create test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Seed cars from CarFactory examples
+        foreach (\Database\Factories\CarFactory::$examples as $carData) {
+            Car::create($carData);
+        }
+
+        // Seed rentals from RentalFactory examples
+        foreach (\Database\Factories\RentalFactory::$examples as $rentalData) {
+            Rental::create($rentalData);
+        }
     }
 }

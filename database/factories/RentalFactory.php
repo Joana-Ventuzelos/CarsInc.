@@ -17,7 +17,7 @@ class RentalFactory extends Factory
     protected $model = \App\Models\Rental::class;
 
     /**
-     * Static array of 20 example rentals.
+     * Static array of example rentals based on locacao_carros.sql data.
      *
      * @var array<int, array<string, mixed>>
      */

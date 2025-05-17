@@ -13,9 +13,20 @@
                 @else
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         @foreach($cars as $car)
-                            <a href="{{ route('car.show', $car->id) }}" class="w-full block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded text-center">
-                                {{ $car->brand }} {{ $car->model }}
-                            </a>
+                            <div class="w-full block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded">
+                                <a href="{{ route('car.show', $car->id) }}" class="text-lg font-bold underline">
+                                    {{ $car->brand }} {{ $car->model }}
+                                </a>
+                                <p>License Plate: {{ $car->license_plate }}</p>
+                                <p>Price per Day: ${{ number_format($car->price_per_day, 2) }}</p>
+                                <p>Status:
+                                    @if($car->is_available)
+                                        <span class="text-green-400">Available</span>
+                                    @else
+                                        <span class="text-red-400">Not Available</span>
+                                    @endif
+                                </p>
+                            </div>
                         @endforeach
                     </div>
                 @endif

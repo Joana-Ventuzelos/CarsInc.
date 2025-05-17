@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Car;
+use App\Models\Rental;
 
 class CarController extends Controller
 {
@@ -15,8 +16,11 @@ class CarController extends Controller
         // Fetch all cars from the database
         $cars = Car::all();
 
-        // Return the consolidated index view
-        return view('car.index', ['cars' => $cars]);
+        // Fetch all rentals from the database with related car
+        $rentals = Rental::with('car')->get();
+
+        // Return the consolidated index view with cars and rentals
+        return view('car.index', ['cars' => $cars, 'rentals' => $rentals]);
     }
 
     /**
@@ -26,7 +30,6 @@ class CarController extends Controller
     {
         // Return the view for creating a new car
         return view('car.create');
-
     }
 
     /**
@@ -46,7 +49,6 @@ class CarController extends Controller
 
         // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car created successfully.');
-        // return redirect()->route('car.index')->with('success', 'Car created successfully.');
     }
 
     /**
@@ -58,10 +60,7 @@ class CarController extends Controller
         $car = Car::findOrFail($id);
 
         // Return the view with the car data
-        // return view('car.show', compact('car'));
-        return view('car.show');
-         return view('car.show', compact('car'));
-
+        return view('car.show', compact('car'));
     }
 
     /**
@@ -73,9 +72,7 @@ class CarController extends Controller
         $car = Car::findOrFail($id);
 
         // Return the view to edit the car
-        // return view('car.edit', compact('car'));
-        return view('car.edit');
-         return view('car.edit', compact('car'));
+        return view('car.edit', compact('car'));
     }
 
     /**
@@ -96,7 +93,6 @@ class CarController extends Controller
 
         // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car updated successfully.');
-        // return redirect()->route('car.index')->with('success', 'Car updated successfully.');
     }
 
     /**
@@ -112,6 +108,5 @@ class CarController extends Controller
 
         // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car deleted successfully.');
-        // return redirect()->route('car.index')->with('success', 'Car deleted successfully.');
     }
 }
