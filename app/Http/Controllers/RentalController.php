@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Rental;
+use App\Models\Car;
 
 class RentalController extends Controller
 {
@@ -12,11 +13,14 @@ class RentalController extends Controller
      */
     public function index()
     {
-    // Fetch paginated rentals from the database
-    $rentals = Rental::paginate(30);
+        // Fetch paginated rentals from the database
+        $rentals = Rental::paginate(30);
 
-    // Return the view with the rentals data
-    return view('rental.index', ['rentals' => $rentals]);
+        // Fetch paginated cars from the database
+$cars = Car::with('caracteristicas')->paginate(30);
+
+        // Return the view with the rentals and cars data
+        return view('rental.index', ['rentals' => $rentals, 'cars' => $cars]);
     }
 
     /**

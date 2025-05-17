@@ -13,15 +13,9 @@ class CarController extends Controller
      */
     public function index()
     {
-        // Fetch all cars from the database
-        $cars = Car::all();
-
-        // Fetch all rentals from the database with related car
-        $cars = Car::paginate(30); // Show 30 cars per page
-        return view('car.index', compact('cars'));// or any number per page
-
-        // Return the consolidated index view with cars and rentals
-        return view('car.index', ['cars' => $cars, 'rentals' => $rentals]);
+        // Fetch all cars with characteristics from the database
+        $cars = Car::with('caracteristicas')->paginate(30); // Show 30 cars per page
+        return view('car.index', compact('cars'));
     }
 
     /**

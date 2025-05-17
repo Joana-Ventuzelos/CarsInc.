@@ -13,7 +13,7 @@
                 @else
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         @foreach($cars as $car)
-                            <div class="w-full block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-6 rounded">
+<div class="w-full block bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded">
                                 {{-- Placeholder for car image --}}
                                 <div class="mb-2">
                                     <img src="https://via.placeholder.com/150x80?text=Car+Image" alt="Car Image" class="rounded w-full mb-2">
@@ -24,12 +24,18 @@
                                 <p>License Plate: {{ $car->license_plate }}</p>
                                 <p>Price per Day: ${{ number_format($car->price_per_day, 2) }}</p>
                                 <p>Status:
-                                    @if($car->is_available)
-                                        <span class="text-green-400">Available</span>
-                                    @else
-                                        <span class="text-red-400">Not Available</span>
-                                    @endif
+@if($car->is_available)
+    <span class="text-yellow-800">Available</span>
+@else
+    <span class="text-red-400">Not Available</span>
+@endif
                                 </p>
+                                <p>Characteristics:</p>
+                                <ul class="list-disc list-inside text-sm">
+                                    @foreach($car->caracteristicas as $caracteristica)
+                                        <li>{{ $caracteristica->nome }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
                         @endforeach
                     </div>

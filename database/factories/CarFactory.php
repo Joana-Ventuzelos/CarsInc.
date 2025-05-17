@@ -61,6 +61,10 @@ class CarFactory extends Factory
      */
     public function definition(): array
     {
+        static $index = 0;
+        $example = self::$examples[$index % count(self::$examples)];
+    public function definition(): array
+    {
         return [
             'brand' => $this->faker->company(),
             'model' => $this->faker->word(),

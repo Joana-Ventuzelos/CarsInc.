@@ -14,6 +14,7 @@ class Car extends Model
         'license_plate',
         'price_per_day',
         'is_available',
+        'image_path',
     ];
 
     public function rentals()
@@ -24,5 +25,10 @@ class Car extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function caracteristicas()
+    {
+        return $this->belongsToMany(\App\Models\Caracteristica::class, 'bem_caracteristicas', 'bem_locavel_id', 'caracteristica_id');
     }
 }
