@@ -7,14 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Car extends Model
 {
     protected $fillable = [
-        'make',
+        'brand',
         'model',
-        'year',
-        'color',
         'license_plate',
         'price_per_day',
-        'availability_status',
-        'image_url',
+        'is_available',
     ];
 
     public function rentals()

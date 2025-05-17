@@ -32,10 +32,10 @@
                 </form>
             </div>
             <div class="max-w-sm mx-auto p-5 mt-6 flex justify-around space-x-4">
-                <a href="{{ url('/car') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                <a href="{{ route('car.index') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
                     Cars
                 </a>
-                <a href="{{ url('/rental') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                <a href="{{ route('rental.index') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
                     Rentals
                 </a>
                 <a href="{{ url('/users') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">

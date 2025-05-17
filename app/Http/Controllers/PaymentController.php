@@ -22,11 +22,10 @@ class PaymentController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        // Return the view for creating a new payment
-        return view('payment.create');
-        return view('payment.create', compact('payments'));
+        $rental_id = $request->query('rental_id');
+        return view('payment.create', ['rental_id' => $rental_id]);
     }
 
     /**
@@ -34,18 +33,21 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request data
         $request->validate([
+            'rental_id' => 'required|exists:rentals,id',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
         ]);
 
-        // Store the payment in the database
-        // Payment::create($request->all());
+        $payment = new \App\Models\Payment();
+        $payment->rental_id = $request->rental_id;
+        $payment->amount = $request->amount;
+        $payment->payment_method = $request->payment_method;
+        $payment->description = $request->description;
+        $payment->save();
 
-        // Redirect to the payments index with a success message
-        return redirect()->route('payment.index')->with('success', 'Payment created successfully.');
+        return redirect()->route('rental.index')->with('success', 'Payment created successfully.');
     }
 
     /**

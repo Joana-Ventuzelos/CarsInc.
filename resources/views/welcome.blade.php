@@ -167,13 +167,13 @@
                     </main>
 
                     <div class="mt-10 flex justify-center space-x-6">
-                        <a href="{{ url('/car') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                        <a href="{{ route('car.index') }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
                             Cars
                         </a>
-                        <a href="{{ url('/rental') }}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                        <a href="{{ route('rental.index') }}" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
                             Rentals
                         </a>
-                        <a href="{{ url('/users') }}" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+                        <a href="{{ route('users.index') }}" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
                             Users
                         </a>
                     </div>

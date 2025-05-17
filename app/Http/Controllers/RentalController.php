@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Rental;
 
 class RentalController extends Controller
 {
@@ -12,11 +13,10 @@ class RentalController extends Controller
     public function index()
     {
         // Fetch all rentals from the database
-        // $rentals = Rental::all();
+        $rentals = Rental::all();
 
         // Return the view with the rentals data
-        return view('rental.index');
-        // return view('rental.index', compact('rentals'));
+        return view('rental.index', ['rentals' => $rentals]);
     }
 
     /**
@@ -42,7 +42,7 @@ class RentalController extends Controller
         ]);
 
         // Store the rental in the database
-        // Rental::create($request->all());
+        Rental::create($request->all());
 
         // Redirect to the rentals index with a success message
         return redirect()->route('rental.index')->with('success', 'Rental created successfully.');
@@ -54,7 +54,7 @@ class RentalController extends Controller
     public function show(string $id)
     {
         // Fetch the rental by id from the database
-        // $rental = Rental::findOrFail($id);
+        $rental = Rental::findOrFail($id);
         // Return the view with the rental data
         // return view('rental.show', compact('rental'));
         return view('rental.show');
@@ -66,7 +66,7 @@ class RentalController extends Controller
     public function edit(string $id)
     {
         // Fetch the rental by id from the database
-        // $rental = Rental::findOrFail($id);
+        $rental = Rental::findOrFail($id);
 
         // Return the view to edit the rental
         // return view('rental.edit', compact('rental'));
@@ -86,8 +86,8 @@ class RentalController extends Controller
         ]);
 
         // Update the rental in the database
-        // $rental = Rental::findOrFail($id);
-        // $rental->update($request->all());
+        $rental = Rental::findOrFail($id);
+        $rental->update($request->all());
 
         // Redirect to the rentals index with a success message
         return redirect()->route('rental.index')->with('success', 'Rental updated successfully.');
@@ -100,10 +100,10 @@ class RentalController extends Controller
     public function destroy(string $id)
     {
         // Fetch the rental by id from the database
-        // $rental = Rental::findOrFail($id);
+        $rental = Rental::findOrFail($id);
 
         // Delete the rental from the database
-        // $rental->delete();
+        $rental->delete();
 
         // Redirect to the rentals index with a success message
         return redirect()->route('rental.index')->with('success', 'Rental deleted successfully.');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Car;
 
 class CarController extends Controller
 {
@@ -12,11 +13,10 @@ class CarController extends Controller
     public function index()
     {
         // Fetch all cars from the database
-        // $cars = Car::all();
+        $cars = Car::all();
 
-        // Return the view with the cars data
-        return view('car.index');
-        // return view('car.index', compact('cars'));
+        // Return the consolidated index view
+        return view('car.index', ['cars' => $cars]);
     }
 
     /**
@@ -42,7 +42,7 @@ class CarController extends Controller
         ]);
 
         // Store the car in the database
-        // Car::create($request->all());
+        Car::create($request->all());
 
         // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car created successfully.');
@@ -55,7 +55,7 @@ class CarController extends Controller
     public function show(string $id)
     {
         // Fetch the car by id from the database
-        // $car = Car::findOrFail($id);
+        $car = Car::findOrFail($id);
 
         // Return the view with the car data
         // return view('car.show', compact('car'));
@@ -70,7 +70,7 @@ class CarController extends Controller
     public function edit(string $id)
     {
         // Fetch the car by id from the database
-        // $car = Car::findOrFail($id);
+        $car = Car::findOrFail($id);
 
         // Return the view to edit the car
         // return view('car.edit', compact('car'));
@@ -91,8 +91,8 @@ class CarController extends Controller
         ]);
 
         // Update the car in the database
-        // $car = Car::findOrFail($id);
-        // $car->update($request->all());
+        $car = Car::findOrFail($id);
+        $car->update($request->all());
 
         // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car updated successfully.');
@@ -105,10 +105,10 @@ class CarController extends Controller
     public function destroy(string $id)
     {
         // Fetch the car by id from the database
-        // $car = Car::findOrFail($id);
+        $car = Car::findOrFail($id);
 
         // Delete the car from the database
-        // $car->delete();
+        $car->delete();
 
         // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car deleted successfully.');
