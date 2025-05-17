@@ -63,14 +63,13 @@ class CarFactory extends Factory
     {
         static $index = 0;
         $example = self::$examples[$index % count(self::$examples)];
-    public function definition(): array
-    {
+        $index++;
         return [
-            'brand' => $this->faker->company(),
-            'model' => $this->faker->word(),
-            'license_plate' => strtoupper($this->faker->bothify('???-####')),
-            'price_per_day' => $this->faker->randomFloat(2, 30, 200),
-            'is_available' => $this->faker->boolean(80),
+            'brand' => $example['brand'],
+            'model' => $example['model'],
+            'license_plate' => $example['license_plate'],
+            'price_per_day' => $example['price_per_day'],
+            'is_available' => $example['is_available'],
         ];
     }
 }
