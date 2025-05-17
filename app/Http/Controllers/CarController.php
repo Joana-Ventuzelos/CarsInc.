@@ -17,7 +17,8 @@ class CarController extends Controller
         $cars = Car::all();
 
         // Fetch all rentals from the database with related car
-        $rentals = Rental::with('car')->get();
+        $cars = Car::paginate(30); // Show 30 cars per page
+        return view('car.index', compact('cars'));// or any number per page
 
         // Return the consolidated index view with cars and rentals
         return view('car.index', ['cars' => $cars, 'rentals' => $rentals]);

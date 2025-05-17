@@ -12,11 +12,11 @@ class RentalController extends Controller
      */
     public function index()
     {
-        // Fetch all rentals from the database
-        $rentals = Rental::all();
+    // Fetch paginated rentals from the database
+    $rentals = Rental::paginate(30);
 
-        // Return the view with the rentals data
-        return view('rental.index', ['rentals' => $rentals]);
+    // Return the view with the rentals data
+    return view('rental.index', ['rentals' => $rentals]);
     }
 
     /**

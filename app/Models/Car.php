@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Rental;
+use App\Models\Review;
 
 class Car extends Model
 {

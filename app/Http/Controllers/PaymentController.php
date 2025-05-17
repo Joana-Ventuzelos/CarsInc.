@@ -13,9 +13,9 @@ class PaymentController extends Controller
     {
         // Fetch all payments from the database
         // $payments = Payment::all();
-
+          $payments = \App\Models\Payment::paginate(30);
         // Return the view with the payments data
-        return view('payment.index');
+        return view('payment.index', compact('payments'));
         // return view('payment.index', compact('payments'));
     }
 
