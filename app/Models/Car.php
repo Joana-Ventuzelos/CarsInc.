@@ -31,4 +31,9 @@ class Car extends Model
     {
         return $this->belongsToMany(\App\Models\Caracteristica::class, 'bem_caracteristicas', 'bem_locavel_id', 'caracteristica_id');
     }
+
+    public function localizacoes()
+    {
+        return $this->hasMany(\App\Models\Localizacao::class, 'bem_locavel_id');
+    }
 }

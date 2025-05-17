@@ -29,5 +29,8 @@ class DatabaseSeeder extends Seeder
         foreach (\Database\Factories\RentalFactory::$examples as $rentalData) {
             Rental::create($rentalData);
         }
+
+        // Seed localizacoes
+        $this->call(LocalizacaoSeeder::class);
     }
 }

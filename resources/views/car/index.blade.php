@@ -55,10 +55,10 @@
                                         <span class="text-red-400">Not Available</span>
                                     @endif
                                 </p>
-                                <p>Characteristics:</p>
+                                <p>Locations:</p>
                                 <ul class="list-disc list-inside text-sm">
-                                    @foreach ($car->caracteristicas as $caracteristica)
-                                        <li>{{ $caracteristica->nome }}</li>
+                                    @foreach ($car->localizacoes as $localizacao)
+                                        <li>{{ $localizacao->cidade }} - {{ $localizacao->filial }} - {{ $localizacao->posicao }}</li>
                                     @endforeach
                                 </ul>
                             </div>
