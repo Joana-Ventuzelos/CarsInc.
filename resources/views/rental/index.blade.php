@@ -45,7 +45,7 @@
                                     {{ $car->brand }} {{ $car->model }}
                                 </a>
                                 <p>License Plate: {{ $car->license_plate }}</p>
-                                <p>Price per Day: ${{ number_format($car->price_per_day, 2) }}</p>
+<p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
                                 <p>Status:
                                     @if($car->is_available)
                                         <span class="text-yellow-800">Available</span>

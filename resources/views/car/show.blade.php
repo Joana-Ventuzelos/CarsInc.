@@ -31,7 +31,7 @@
                 alt="{{ $car->brand }} {{ $car->model }}" class="w-full h-60 object-cover rounded mb-4">
             <div class="text-center">
                 <p>License Plate: {{ $car->license_plate }}</p>
-                <p>Price per Day: ${{ number_format($car->price_per_day, 2) }}</p>
+<p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
                 <p>Status:
                     @if($car->is_available)
                         <span class="text-green-500">Available</span>
