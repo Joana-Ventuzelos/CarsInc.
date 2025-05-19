@@ -3,20 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Car;
+use App\Application\Car\CarService;
 use App\Models\Rental;
 
 class CarController extends Controller
 {
+    private CarService $carService;
+
+    public function __construct()
+    {
+        $this->carService = new CarService();
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // Fetch all cars with localizacoes from the database
-        $cars = Car::with('localizacoes')->paginate(30); // Show 30 cars per page
+        // For simplicity, using Eloquent directly here, can be refactored similarly
+        // to use application service if needed.
+        $cars = \App\Models\Car::with('localizacoes')->paginate(30);
 
-        // Fetch characteristics for each car
         $characteristics = [];
         foreach ($cars as $car) {
             $characteristics[$car->id] = $car->getCharacteristics();
@@ -30,7 +37,6 @@ class CarController extends Controller
      */
     public function create()
     {
-        // Return the view for creating a new car
         return view('car.create');
     }
 
@@ -39,17 +45,16 @@ class CarController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request data
         $request->validate([
             'car_name' => 'required|string|max:255',
             'car_model' => 'required|string|max:255',
             'car_price' => 'required|numeric|min:0',
         ]);
 
-        // Store the car in the database
-        Car::create($request->all());
+        // For simplicity, using Eloquent directly here, can be refactored similarly
+        // to use application service if needed.
+        \App\Models\Car::create($request->all());
 
-        // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car created successfully.');
     }
 
@@ -58,11 +63,11 @@ class CarController extends Controller
      */
     public function show(string $id)
     {
-        // Fetch the car by id from the database
-        $car = Car::findOrFail($id);
-
-        // Return the view with the car data
-        return view('car.show', compact('car'));
+        $car = $this->carService->getCarById($id);
+        if (!$car) {
+            abort(404);
+        }
+        return view('car.show', ['car' => $car]);
     }
 
     /**
@@ -70,10 +75,7 @@ class CarController extends Controller
      */
     public function edit(string $id)
     {
-        // Fetch the car by id from the database
-        $car = Car::findOrFail($id);
-
-        // Return the view to edit the car
+        $car = \App\Models\Car::findOrFail($id);
         return view('car.edit', compact('car'));
     }
 
@@ -82,18 +84,15 @@ class CarController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validate the request data
         $request->validate([
             'car_name' => 'required|string|max:255',
             'car_model' => 'required|string|max:255',
             'car_price' => 'required|numeric|min:0',
         ]);
 
-        // Update the car in the database
-        $car = Car::findOrFail($id);
+        $car = \App\Models\Car::findOrFail($id);
         $car->update($request->all());
 
-        // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car updated successfully.');
     }
 
@@ -102,13 +101,9 @@ class CarController extends Controller
      */
     public function destroy(string $id)
     {
-        // Fetch the car by id from the database
-        $car = Car::findOrFail($id);
-
-        // Delete the car from the database
+        $car = \App\Models\Car::findOrFail($id);
         $car->delete();
 
-        // Redirect to the cars index with a success message
         return redirect()->route('car.index')->with('success', 'Car deleted successfully.');
     }
 }
