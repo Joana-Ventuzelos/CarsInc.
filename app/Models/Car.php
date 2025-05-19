@@ -37,15 +37,18 @@ class Car extends Model
         return $this->hasMany(\App\Models\Localizacao::class, 'bem_locavel_id');
     }
 
+    public function bensLocaveis()
+    {
+        return $this->hasMany(\App\Models\BensLocaveis::class, 'car_id');
+    }
+
     public function getCharacteristics()
     {
         $marca = \App\Models\Marca::where('nome', $this->brand)->first();
         if (!$marca) {
             return null;
         }
-        $bensLocaveis = \App\Models\BensLocaveis::where('marca_id', $marca->id)
-            ->where('modelo', $this->model)
-            ->get();
+        $bensLocaveis = $this->bensLocaveis()->get();
 
         return [
             'marca' => $marca,

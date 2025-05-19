@@ -9,6 +9,8 @@ class BensLocaveis extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $table = 'bens_locaveis';
 
     protected $fillable = [
@@ -29,5 +31,10 @@ class BensLocaveis extends Model
     public function marca()
     {
         return $this->belongsTo(Marca::class, 'marca_id');
+    }
+
+    public function car()
+    {
+        return $this->belongsTo(\App\Models\Car::class, 'car_id');
     }
 }
