@@ -15,7 +15,14 @@ class CarController extends Controller
     {
         // Fetch all cars with localizacoes from the database
         $cars = Car::with('localizacoes')->paginate(30); // Show 30 cars per page
-        return view('car.index', compact('cars'));
+
+        // Fetch characteristics for each car
+        $characteristics = [];
+        foreach ($cars as $car) {
+            $characteristics[$car->id] = $car->getCharacteristics();
+        }
+
+        return view('car.index', compact('cars', 'characteristics'));
     }
 
     /**

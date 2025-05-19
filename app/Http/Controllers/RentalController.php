@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Rental;
 use App\Models\Car;
+use App\Models\Marca;
+use App\Models\BensLocaveis;
 
 class RentalController extends Controller
 {
