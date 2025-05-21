@@ -22,7 +22,7 @@ class CarController extends Controller
     {
         // For simplicity, using Eloquent directly here, can be refactored similarly
         // to use application service if needed.
-        $cars = \App\Models\Car::with('localizacoes')->paginate(30);
+        $cars = \App\Models\Car::with('localizacoes')->orderBy('id')->paginate(30);
 
         $characteristics = [];
         foreach ($cars as $car) {
@@ -61,13 +61,16 @@ class CarController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        $car = $this->carService->getCarById($id);
-        if (!$car) {
-            abort(404);
+        $cars = \App\Models\Car::with('localizacoes')->orderBy('id')->paginate(30);
+
+        $characteristics = [];
+        foreach ($cars as $car) {
+            $characteristics[$car->id] = $car->getCharacteristics();
         }
-        return view('car.show', ['car' => $car]);
+
+        return view('car.show', compact('cars', 'characteristics'));
     }
 
     /**
