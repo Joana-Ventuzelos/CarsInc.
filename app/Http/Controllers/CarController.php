@@ -22,7 +22,7 @@ class CarController extends Controller
     {
         // For simplicity, using Eloquent directly here, can be refactored similarly
         // to use application service if needed.
-        $cars = \App\Models\Car::with('localizacoes')->orderBy('id')->paginate(30);
+        $cars = \App\Models\Car::with('localizacoes')->orderBy('brand')->paginate(30);
 
         $characteristics = [];
         foreach ($cars as $car) {
@@ -63,7 +63,7 @@ class CarController extends Controller
      */
     public function show()
     {
-        $cars = \App\Models\Car::with('localizacoes')->orderBy('id')->paginate(30);
+        $cars = \App\Models\Car::with('localizacoes')->orderBy('brand')->paginate(30);
 
         $characteristics = [];
         foreach ($cars as $car) {

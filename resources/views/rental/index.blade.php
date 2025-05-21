@@ -49,14 +49,14 @@
                 @else
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         @foreach($cars as $car)
-                            @php
-                                $key = strtolower(str_replace(' ', '-', $car->brand)) . '-' . strtolower(str_replace(' ', '-', $car->model));
-                                $imageFile = $imageMap[$key] ?? 'images.jpg';
-                            @endphp
-                            <div class="w-full block bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded">
-                                <div class="mb-2">
-                                    <img src="{{ asset('images/' . $imageFile) }}" alt="{{ $car->brand }} {{ $car->model }}" class="rounded w-full mb-2">
-                                </div>
+                                    @php
+                                        $key = $car->license_plate;
+                                        $imageFile = $imageMap[$key] ?? 'images.jpg';
+                                    @endphp
+                                    <div class="w-full block bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded">
+                                        <div class="mb-2">
+                                            <img src="{{ asset('images/' . $imageFile) }}" alt="{{ $car->brand }} {{ $car->model }}" class="rounded w-full mb-2">
+                                        </div>
                                 <a href="{{ route('car.show', $car->id) }}" class="text-lg font-bold underline">
                                     {{ $car->brand }} {{ $car->model }}
                                 </a>
