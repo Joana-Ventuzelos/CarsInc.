@@ -84,13 +84,13 @@
                                 </button>
                                 <div id="characteristics-{{ $car->id }}" class="hidden mt-2 bg-gray-100 text-black p-2 rounded">
                                     @if(isset($characteristics[$car->id]) && $characteristics[$car->id])
-                                        <p><strong>Marca:</strong> {{ $characteristics[$car->id]['marca']->nome }}</p>
-                                        <p><strong>Observação:</strong> {{ $characteristics[$car->id]['marca']->observacao }}</p>
-                                        <p><strong>Bens Locáveis:</strong></p>
+                                        <p><strong>Brand:</strong> {{ $characteristics[$car->id]['marca']->nome }}</p>
+                                        <p><strong>Observation:</strong> {{ $characteristics[$car->id]['marca']->observacao }}</p>
+                                        <p><strong>Rentable Assets:</strong></p>
                                         <ul class="list-disc list-inside text-sm">
                                             @foreach ($characteristics[$car->id]['bens_locaveis'] as $bem)
                                                 <li>
-                                                    Modelo: {{ $bem->modelo }}, Cor: {{ $bem->cor }}, Passageiros: {{ $bem->numero_passageiros }}, Combustível: {{ $bem->combustivel }}, Portas: {{ $bem->numero_portas }}, Transmissão: {{ $bem->transmissao }}, Ano: {{ $bem->ano }}, Preço Diário: €{{ number_format($bem->preco_diario, 2) }}
+                                                    Model: {{ $bem->modelo }}, Color: {{ $bem->cor }}, Passengers: {{ $bem->numero_passageiros }}, Fuel: {{ $bem->combustivel }}, Doors: {{ $bem->numero_portas }}, Transmission: {{ $bem->transmissao }}, Year: {{ $bem->ano }}, Daily Price: €{{ number_format($bem->preco_diario, 2) }}
                                                 </li>
                                             @endforeach
                                         </ul>

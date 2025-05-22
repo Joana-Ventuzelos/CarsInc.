@@ -1,9 +1,9 @@
 @props([
-    'client' => 'Cliente',
-    'local' => 'Loja Central',
+    'client' => 'Client',
+    'local' => 'Main Store',
 ])
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <style>
@@ -52,23 +52,23 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Confirmação de Reserva</h1>
+      <h1>Reservation Confirmation</h1>
     </div>
     <div class="content">
-      <p>Olá, <strong>{{ $client }}</strong>!</p>
+      <p>Hello, <strong>{{ $client }}</strong>!</p>
 
-      <p>Confirmamos com prazer a sua reserva.</p>
+      <p>We are pleased to confirm your reservation.</p>
 
-      <p><strong>Retirada:</strong> {{ $local }}, a partir das 13h.</p>
+      <p><strong>Pickup:</strong> {{ $local }}, from 1 PM.</p>
 
-      <p>Por favor, leve seus documentos de identificação para concluir a locação.</p>
+      <p>Please bring your identification documents to complete the rental.</p>
 
-      <p>Agradecemos por escolher nossos serviços! Em caso de dúvidas, estamos à disposição.</p>
+      <p>Thank you for choosing our services! If you have any questions, we are at your disposal.</p>
 
-      <a href="{{ url('/dashboard') }}" class="button">Acesse os detalhes da reserva</a>
+      <a href="{{ url('/dashboard') }}" class="button">Access reservation details</a>
     </div>
     <div class="footer">
-      &copy; {{ date('Y') }} Empresa Cars. Todos os direitos reservados.
+      &copy; {{ date('Y') }} Cars Company. All rights reserved.
     </div>
   </div>
 </body>

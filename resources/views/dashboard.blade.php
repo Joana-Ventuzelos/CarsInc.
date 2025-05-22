@@ -21,13 +21,12 @@
                 <form action="{{ route('send.email') }}" method="POST"
                     class="mt-5 flex flex-col items-center space-y-2 p-2 border-2 border-gray-500 rounded-lg shadow-lg bg-gray-100">
                     @csrf
-                    <label for="pickup" class="text-lg font-medium text-gray-700">Local de levantamento da
-                        reserva:</label>
+                    <label for="pickup" class="text-lg font-medium text-gray-700">Reservation pickup location:</label>
                     <input type="text" id="pickup" name="pickup" required
                         class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                     <button type="submit"
                         class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
-                        Enviar confirmação por e-mail
+                        Send confirmation by email
                     </button>
                 </form>
             </div>
