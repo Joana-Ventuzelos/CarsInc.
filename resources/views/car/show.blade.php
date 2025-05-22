@@ -20,7 +20,7 @@
             'WS-54-RJ' => 'honda hrv preto.jpg',
             'SP-24-PB' => 'Touring_prata_platinum_0_0 honda hrv cinza.webp',
             'JV-95-HP' => 'ford focus branco.jpg',
-            'PM-BP-90' => 'Agate Black Metallic-UM-18,18,20-640-en_US.avif',
+            'PM-BP-90' => 'ford-focus-ford-focus-1-5-ecoblue-st-line-x-edition-s-s-5dr_8265219035.jpg',
             'PA-12-AP' => 'djnd.jpg',
             'MT-64-MG' => 'hq720.jpg',
             'AA-A1-03' => 'ford-ecosport-se-2021-1024x583.jpg.webp',
