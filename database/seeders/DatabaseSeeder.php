@@ -14,10 +14,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test user
+        // Create regular user
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Regular User',
+            'email' => 'user@example.com',
+            'nif' => '123456789',
+            'is_admin' => false,
+        ]);
+
+        // Create admin user
+        User::factory()->admin()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
+            'nif' => '987654321',
         ]);
 
         // Seed cars from CarFactory examples

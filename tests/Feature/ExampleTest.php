@@ -16,4 +16,16 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_users_exist_with_correct_roles(): void
+    {
+        $regularUser = \App\Models\User::where('email', 'user@example.com')->first();
+        $adminUser = \App\Models\User::where('email', 'admin@example.com')->first();
+
+        $this->assertNotNull($regularUser);
+        $this->assertFalse($regularUser->is_admin);
+
+        $this->assertNotNull($adminUser);
+        $this->assertTrue($adminUser->is_admin);
+    }
 }
