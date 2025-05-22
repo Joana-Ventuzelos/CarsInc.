@@ -61,16 +61,13 @@ class CarController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function show(string $id)
     {
-        $cars = \App\Models\Car::with('localizacoes')->orderBy('brand')->paginate(30);
+        $car = \App\Models\Car::with('localizacoes')->findOrFail($id);
 
-        $characteristics = [];
-        foreach ($cars as $car) {
-            $characteristics[$car->id] = $car->getCharacteristics();
-        }
+        $characteristics = $car->getCharacteristics();
 
-        return view('car.show', compact('cars', 'characteristics'));
+        return view('car.show', compact('car', 'characteristics'));
     }
 
     /**

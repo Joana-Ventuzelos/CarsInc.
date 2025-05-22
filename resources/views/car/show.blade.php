@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            Cars ({{ $cars->total() }})
+            Car Details
         </h2>
     </x-slot>
 
@@ -46,65 +46,49 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                @if ($cars->isEmpty())
-                    <p>No cars available.</p>
-                @else
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        @foreach ($cars as $car)
-                            @php
-                                $key = $car->license_plate;
-                                $imageFile = $imageMap[$key] ?? 'images.jpg';
-                            @endphp
-                            <div
-                                class="w-full block bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded">
-                                <div class="mb-2">
-                                    <img src="{{ asset('images/' . $imageFile) }}"
-                                        alt="{{ $car->brand }} {{ $car->model }}" class="rounded w-full mb-2">
-                                </div>
-                                <a href="{{ route('car.show', $car->id) }}" class="text-lg font-bold underline">
-                                    {{ $car->brand }} {{ $car->model }}
-                                </a>
-                                <p>License Plate: {{ $car->license_plate }}</p>
-                                <p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
-                                <p>Status:
-                                    @if ($car->is_available)
-                                        <span class="text-yellow-800">Available</span>
-                                    @else
-                                        <span class="text-red-400">Not Available</span>
-                                    @endif
-                                </p>
-                                <p>Locations:</p>
-                                <ul class="list-disc list-inside text-sm">
-                                    @foreach ($car->localizacoes as $localizacao)
-                                        <li>{{ $localizacao->cidade }} - {{ $localizacao->filial }} - {{ $localizacao->posicao }}</li>
-                                    @endforeach
-                                </ul>
-                                <button onclick="document.getElementById('characteristics-{{ $car->id }}').classList.toggle('hidden')" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Characteristics
-                                </button>
-                                <div id="characteristics-{{ $car->id }}" class="hidden mt-2 bg-gray-100 text-black p-2 rounded">
-                                    @if(isset($characteristics[$car->id]) && $characteristics[$car->id])
-                                        <p><strong>Brand:</strong> {{ $characteristics[$car->id]['marca']->nome }}</p>
-                                        <p><strong>Observation:</strong> {{ $characteristics[$car->id]['marca']->observacao }}</p>
-                                        <p><strong>Rentable Assets:</strong></p>
-                                        <ul class="list-disc list-inside text-sm">
-                                            @foreach ($characteristics[$car->id]['bens_locaveis'] as $bem)
-                                                <li>
-                                                    Model: {{ $bem->modelo }}, Color: {{ $bem->cor }}, Passengers: {{ $bem->numero_passageiros }}, Fuel: {{ $bem->combustivel }}, Doors: {{ $bem->numero_portas }}, Transmission: {{ $bem->transmissao }}, Year: {{ $bem->ano }}, Daily Price: €{{ number_format($bem->preco_diario, 2) }}
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    @else
-                                        <p>No characteristics available.</p>
-                                    @endif
-                                </div>
-                            </div>
+                <div class="w-full block bg-black hover:bg-gray-800 text-white font-semibold py-4 px-6 rounded">
+                    <div class="mb-2">
+                        <img src="{{ asset('images/' . $imageFile) }}"
+                            alt="{{ $car->brand }} {{ $car->model }}" class="rounded w-full mb-2">
+                    </div>
+                    <h3 class="text-lg font-bold underline">
+                        {{ $car->brand }} {{ $car->model }}
+                    </h3>
+                    <p>License Plate: {{ $car->license_plate }}</p>
+                    <p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
+                    <p>Status:
+                        @if ($car->is_available)
+                            <span class="text-yellow-800">Available</span>
+                        @else
+                            <span class="text-red-400">Not Available</span>
+                        @endif
+                    </p>
+                    <p>Locations:</p>
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($car->localizacoes as $localizacao)
+                            <li>{{ $localizacao->cidade }} - {{ $localizacao->filial }} - {{ $localizacao->posicao }}</li>
                         @endforeach
+                    </ul>
+                    <button onclick="document.getElementById('characteristics').classList.toggle('hidden')" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Characteristics
+                    </button>
+                    <div id="characteristics" class="hidden mt-2 bg-gray-100 text-black p-2 rounded">
+                        @if($characteristics)
+                            <p><strong>Brand:</strong> {{ $characteristics['marca']->nome }}</p>
+                            <p><strong>Observation:</strong> {{ $characteristics['marca']->observacao }}</p>
+                            <p><strong>Rentable Assets:</strong></p>
+                            <ul class="list-disc list-inside text-sm">
+                                @foreach ($characteristics['bens_locaveis'] as $bem)
+                                    <li>
+                                        Model: {{ $bem->modelo }}, Color: {{ $bem->cor }}, Passengers: {{ $bem->numero_passageiros }}, Fuel: {{ $bem->combustivel }}, Doors: {{ $bem->numero_portas }}, Transmission: {{ $bem->transmissao }}, Year: {{ $bem->ano }}, Daily Price: €{{ number_format($bem->preco_diario, 2) }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <p>No characteristics available.</p>
+                        @endif
                     </div>
-                    <div class="mt-6">
-                        {{ $cars->links() }}
-                    </div>
-                @endif
+                </div>
             </div>
         </div>
     </div>
