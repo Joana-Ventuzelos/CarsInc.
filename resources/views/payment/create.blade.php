@@ -13,8 +13,8 @@
                     <input type="hidden" name="rental_id" value="{{ request('rental_id') }}" />
 
                     <div class="mb-4">
-                        <label for="amount" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Amount</label>
-                        <input id="amount" name="amount" type="number" step="0.01" min="0" required
+                        <label for="rental_days" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Rental Days</label>
+                        <input id="rental_days" name="rental_days" type="number" 
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                     </div>
 
