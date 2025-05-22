@@ -77,9 +77,9 @@
                                         <li>{{ $localizacao->cidade }} - {{ $localizacao->filial }} - {{ $localizacao->posicao }}</li>
                                     @endforeach
                                 </ul>
-                                <button onclick="document.getElementById('characteristics-{{ $car->id }}').classList.toggle('hidden')" class="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Characteristics
-                                </button>
+<button onclick="document.getElementById('characteristics-{{ $car->id }}').classList.toggle('hidden')" class="mt-2 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">
+    Characteristics
+</button>
                                 <div id="characteristics-{{ $car->id }}" class="hidden mt-2 bg-gray-100 text-black p-2 rounded">
                                     @if(isset($characteristics[$car->id]) && $characteristics[$car->id])
                                         <p><strong>Marca:</strong> {{ $characteristics[$car->id]['marca']->nome }}</p>
