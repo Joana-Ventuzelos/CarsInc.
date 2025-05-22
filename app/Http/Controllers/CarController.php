@@ -49,6 +49,17 @@ class CarController extends Controller
             'car_name' => 'required|string|max:255',
             'car_model' => 'required|string|max:255',
             'car_price' => 'required|numeric|min:0',
+            'car_brand' => 'required|string|max:255',
+            'car_year' => 'required|integer|min:1886|max:' . date('Y'),
+            'car_color' => 'required|string|max:255',
+            'car_mileage' => 'required|integer|min:0',
+            'car_transmission' => 'required|string|in:manual,automatic',
+            'car_fuel_type' => 'required|string|in:gasoline,diesel,electric,hybrid',
+            'car_doors' => 'required|integer|min:2|max:5',
+            'car_seats' => 'required|integer|min:2|max:7',
+            'car_air_conditioning' => 'required|boolean',
+            'car_bluetooth' => 'required|boolean',
+            'car_navigation' => 'required|boolean',
         ]);
 
         // For simplicity, using Eloquent directly here, can be refactored similarly
