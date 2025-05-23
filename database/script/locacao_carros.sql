@@ -1,9 +1,9 @@
-CREATE TABLE tipo_bens (
+CREATE TABLE IF NOT EXISTS tipo_bens (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE marca (
+CREATE TABLE IF NOT EXISTS marca (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tipo_bem_id INT NOT NULL,
     nome VARCHAR(100) NOT NULL,
@@ -11,16 +11,16 @@ CREATE TABLE marca (
     FOREIGN KEY (tipo_bem_id) REFERENCES tipo_bens(id)
 );
 
-CREATE TABLE bens_locaveis (
+CREATE TABLE IF NOT EXISTS bens_locaveis (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     marca_id INT NOT NULL,
     modelo VARCHAR(100),
     registo_unico_publico VARCHAR(20),
     cor VARCHAR(20),
     numero_passageiros INT,
-    combustivel ENUM('gasolina', 'diesel', 'elétrico', 'híbrido', 'outro') NOT NULL,
+    combustivel ENUM('gasoline', 'diesel', 'electric', 'hybrid', 'other') NOT NULL,
     numero_portas INT,
-    transmissao ENUM('manual', 'automática'),
+    transmissao ENUM('manual', 'automatic'),
     ano INT,
     manutencao BOOLEAN DEFAULT TRUE,
     preco_diario DECIMAL(10,2),
@@ -28,7 +28,7 @@ CREATE TABLE bens_locaveis (
     FOREIGN KEY (marca_id) REFERENCES marca(id)
 );
 
-CREATE TABLE localizacoes (
+CREATE TABLE IF NOT EXISTS localizacoes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     bem_locavel_id INT,
     cidade VARCHAR(100) NOT NULL,
@@ -38,12 +38,12 @@ CREATE TABLE localizacoes (
     UNIQUE (filial, posicao)
 );
 
-CREATE TABLE caracteristicas (
+CREATE TABLE IF NOT EXISTS caracteristicas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE bem_caracteristicas (
+CREATE TABLE IF NOT EXISTS bem_caracteristicas (
     bem_locavel_id INT,
     caracteristica_id INT,
     PRIMARY KEY (bem_locavel_id, caracteristica_id),
@@ -54,58 +54,56 @@ CREATE TABLE bem_caracteristicas (
 INSERT INTO tipo_bens (id, nome) VALUES (1, 'Carro');
 
 INSERT INTO marca (id, tipo_bem_id, nome, observacao) VALUES
-(1, 1, 'Toyota', 'A confiabilidade e eficiência japonesa que movem o mundo!'),
-(2, 1, 'Honda', 'ecnologia japonesa e eficiência compacta para levar você mais longe!'),
-(3, 1, 'Ford', 'A tradição americana e a inovação automotiva ao seu alcance!.'),
-(4, 1, 'Volkswagen', 'Engenharia alemã, performance e conforto para qualquer destino!'),
-(5, 1, 'Renault', 'Elegância e economia francesas, sem abrir mão da qualidade!');
+(1, 1, 'Toyota', 'The Japanese reliability and efficiency that move the world!'),
+(2, 1, 'Honda', 'Japanese technology and compact efficiency to take you further!'),
+(3, 1, 'Ford', 'American tradition and automotive innovation within your reach!'),
+(4, 1, 'Volkswagen', 'German engineering, performance, and comfort for any destination!'),
+(5, 1, 'Renault', 'French elegance and economy, without compromising on quality!');
 
 INSERT INTO bens_locaveis (
-    marca_id, modelo, registo_unico_publico, cor,
-    numero_passageiros, combustivel, numero_portas, transmissao,
-    ano, manutencao, preco_diario, observacao
+    brand_id, model, public_unique_registration, color, number_of_passengers, fuel, number_of_doors, transmission, 'year', maintenance, daily_price, observation
 ) VALUES
-(1, 'Corolla', '01-AC-01', 'branco', 5, 'gasolina', 4, 'automática', 2020, FALSE, 50.00, ''),
-(1, 'Corolla', 'RS-39-SC', 'cinza', 5, 'gasolina', 4, 'manual', 2022, FALSE, 55.00, ''),
-(1, 'Yaris', 'MS-BA-02', 'vermelho', 5, 'gasolina', 4, 'manual', 2021, FALSE, 48.00, ''),
-(1, 'Yaris', '09-TO-PE', 'azul', 5, 'híbrido', 4, 'automática', 2021, FALSE, 50.00, ''),
-(1, 'RAV4', '07-SE-AL', 'preto', 5, 'híbrido', 5, 'automática', 2023, FALSE, 65.00, ''),
-(1, 'RAV4', 'AD-CT-09', 'branco', 5, 'híbrido', 5, 'automática', 2024, FALSE, 70.00, ''),
-(2, 'Civic', 'AB-10-RN', 'cinza', 5, 'gasolina', 4, 'manual', 2020, FALSE, 55.00, ''),
-(2, 'Civic', 'YG-FC-08', 'azul', 5, 'gasolina', 4, 'automática', 2022, FALSE, 60.00, ''),
-(2, 'Fit', 'GB-78-AH', 'vermelho', 5, 'gasolina', 4, 'manual', 2020, FALSE, 50.00, ''),
-(2, 'Fit', 'EH-16-PA', 'branco', 5, 'gasolina', 4, 'automática', 2022, FALSE, 54.00, ''),
-(2, 'HR-V', 'WS-54-RJ', 'preto', 5, 'híbrido', 5, 'automática', 2020, FALSE, 65.00, ''),
-(2, 'HR-V', 'SP-24-PB', 'cinza', 5, 'híbrido', 5, 'automática', 2022, FALSE, 70.00, ''),
-(3, 'Focus', 'JV-95-HP', 'branco', 5, 'gasolina', 4, 'manual', 2020, FALSE, 55.00, ''),
-(3, 'Focus', 'PM-BP-90', 'preto', 5, 'diesel', 4, 'automática', 2022, FALSE, 59.00, ''),
-(3, 'Fiesta', 'PA-12-AP', 'vermelho', 5, 'gasolina', 4, 'manual', 2020, FALSE, 48.00, ''),
-(3, 'Fiesta', 'MT-64-MG', 'azul', 5, 'gasolina', 4, 'manual', 2022, FALSE, 52.00, ''),
-(3, 'EcoSport', 'AA-A1-03', 'preto', 5, 'gasolina', 5, 'automática', 2020, FALSE, 60.00, ''),
-(3, 'EcoSport', 'HY-10-27', 'branco', 5, 'diesel', 5, 'automática', 2022, FALSE, 66.00, ''),
-(4, 'Golf', 'DF-83-03', 'cinza', 5, 'gasolina', 4, 'manual', 2020, FALSE, 70.00, ''),
-(4, 'Golf', 'MA-PA-27', 'preto', 5, 'gasolina', 4, 'automática', 2022, FALSE, 75.00, ''),
-(4, 'Polo', 'AM-10-31', 'vermelho', 5, 'gasolina', 4, 'manual', 2020, FALSE, 58.00, ''),
-(4, 'Polo', 'CE-93-RO', 'cinza', 5, 'gasolina', 4, 'manual', 2022, FALSE, 62.00, ''),
-(4, 'Tiguan', 'AC-RM-33', 'azul', 5, 'diesel', 5, 'automática', 2020, FALSE, 80.00, ''),
-(4, 'Tiguan', '12-PM-36', 'preto', 5, 'diesel', 5, 'automática', 2022, FALSE, 85.00, ''),
-(5, 'Clio', 'AC-MS-90', 'branco', 5, 'gasolina', 4, 'manual', 2020, FALSE, 45.00, ''),
-(5, 'Clio', 'PR-59-23', 'azul', 5, 'gasolina', 4, 'manual', 2021, FALSE, 47.00, ''),
-(5, 'Captur', '21-ES-34', 'preto', 5, 'híbrido', 5, 'automática', 2020, FALSE, 60.00, ''),
-(5, 'Captur', 'BA-93-57', 'vermelho', 5, 'híbrido', 5, 'automática', 2021, FALSE, 63.00, ''),
-(5, 'Megane', 'GO-AL-68', 'cinza', 5, 'diesel', 4, 'manual', 2020, FALSE, 68.00, ''),
-(5, 'Megane', '29-SE-97', 'azul', 5, 'diesel', 4, 'automática', 2022, FALSE, 73.00, '');
+(1, 'Corolla', '01-AC-01', 'white', 5, 'gasoline', 4, 'automatic', 2020, FALSE, 50.00, ''),
+(1, 'Corolla', 'RS-39-SC', 'gray', 5, 'gasoline', 4, 'manual', 2022, FALSE, 55.00, ''),
+(1, 'Yaris', 'MS-BA-02', 'red', 5, 'gasoline', 4, 'manual', 2021, FALSE, 48.00, ''),
+(1, 'Yaris', '09-TO-PE', 'blue', 5, 'hybrid', 4, 'automatic', 2021, FALSE, 50.00, ''),
+(1, 'RAV4', '07-SE-AL', 'black', 5, 'hybrid', 5, 'automatic', 2023, FALSE, 65.00, ''),
+(1, 'RAV4', 'AD-CT-09', 'white', 5, 'hybrid', 5, 'automatic', 2024, FALSE, 70.00, ''),
+(2, 'Civic', 'AB-10-RN', 'gray', 5, 'gasoline', 4, 'manual', 2020, FALSE, 55.00, ''),
+(2, 'Civic', 'YG-FC-08', 'blue', 5, 'gasoline', 4, 'automatic', 2022, FALSE, 60.00, ''),
+(2, 'Fit', 'GB-78-AH', 'red', 5, 'gasoline', 4, 'manual', 2020, FALSE, 50.00, ''),
+(2, 'Fit', 'EH-16-PA', 'white', 5, 'gasoline', 4, 'automatic', 2022, FALSE, 54.00, ''),
+(2, 'HR-V', 'WS-54-RJ', 'black', 5, 'hybrid', 5, 'automatic', 2020, FALSE, 65.00, ''),
+(2, 'HR-V', 'SP-24-PB', 'gray', 5, 'hybrid', 5, 'automatic', 2022, FALSE, 70.00, ''),
+(3, 'Focus', 'JV-95-HP', 'white', 5, 'gasoline', 4, 'manual', 2020, FALSE, 55.00, ''),
+(3, 'Focus', 'PM-BP-90', 'black', 5, 'diesel', 4, 'automatic', 2022, FALSE, 59.00, ''),
+(3, 'Fiesta', 'PA-12-AP', 'red', 5, 'gasoline', 4, 'manual', 2020, FALSE, 48.00, ''),
+(3, 'Fiesta', 'MT-64-MG', 'blue', 5, 'gasoline', 4, 'manual', 2022, FALSE, 52.00, ''),
+(3, 'EcoSport', 'AA-A1-03', 'black', 5, 'gasoline', 5, 'automatic', 2020, FALSE, 60.00, ''),
+(3, 'EcoSport', 'HY-10-27', 'white', 5, 'diesel', 5, 'automatic', 2022, FALSE, 66.00, ''),
+(4, 'Golf', 'DF-83-03', 'gray', 5, 'gasoline', 4, 'manual', 2020, FALSE, 70.00, ''),
+(4, 'Golf', 'MA-PA-27', 'black', 5, 'gasoline', 4, 'automatic', 2022, FALSE, 75.00, ''),
+(4, 'Polo', 'AM-10-31', 'red', 5, 'gasoline', 4, 'manual', 2020, FALSE, 58.00, ''),
+(4, 'Polo', 'CE-93-RO', 'gray', 5, 'gasoline', 4, 'manual', 2022, FALSE, 62.00, ''),
+(4, 'Tiguan', 'AC-RM-33', 'blue', 5, 'diesel', 5, 'automatic', 2020, FALSE, 80.00, ''),
+(4, 'Tiguan', '12-PM-36', 'black', 5, 'diesel', 5, 'automatic', 2022, FALSE, 85.00, ''),
+(5, 'Clio', 'AC-MS-90', 'white', 5, 'gasoline', 4, 'manual', 2020, FALSE, 45.00, ''),
+(5, 'Clio', 'PR-59-23', 'blue', 5, 'gasoline', 4, 'manual', 2021, FALSE, 47.00, ''),
+(5, 'Captur', '21-ES-34', 'black', 5, 'hybrid', 5, 'automatic', 2020, FALSE, 60.00, ''),
+(5, 'Captur', 'BA-93-57', 'red', 5, 'hybrid', 5, 'automatic', 2021, FALSE, 63.00, ''),
+(5, 'Megane', 'GO-AL-68', 'gray', 5, 'diesel', 4, 'manual', 2020, FALSE, 68.00, ''),
+(5, 'Megane', '29-SE-97', 'blue', 5, 'diesel', 4, 'automatic', 2022, FALSE, 73.00, '');
 
 INSERT INTO caracteristicas (nome) VALUES
-('Ar-condicionado'),
-('Direção assistida'),
+('Air conditioning'),
+('Power steering'),
 ('GPS'),
 ('Bluetooth'),
-('Câmara de marcha-atrás'),
-('Sensores de estacionamento'),
-('Caixa automática'),
+('Rearview camera'),
+('Parking sensors'),
+('Automatic transmission'),
 ('Isofix'),
-('Bagageira grande');
+('Large trunk');
 
 INSERT INTO bem_caracteristicas (bem_locavel_id, caracteristica_id)
 SELECT id, 1 FROM bens_locaveis;
