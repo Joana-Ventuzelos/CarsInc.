@@ -13,16 +13,68 @@ class RentalController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Fetch paginated rentals from the database
-        $rentals = Rental::paginate(30);
+        $query = $request->input('search');
+        $brand = $request->input('brand');
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
 
-        // Fetch paginated cars from the database
-$cars = Car::with('caracteristicas')->paginate(30);
+        $rentalsQuery = Rental::query();
+        $carsQuery = Car::with('caracteristicas');
 
-        // Return the view with the rentals and cars data
-        return view('rental.index', ['rentals' => $rentals, 'cars' => $cars]);
+        if ($query) {
+            $carsQuery->where(function ($q) use ($query) {
+                $q->where('brand', 'like', '%' . $query . '%')
+                  ->orWhere('model', 'like', '%' . $query . '%')
+                  ->orWhere('license_plate', 'like', '%' . $query . '%');
+            });
+
+            $rentalsQuery->whereHas('car', function ($q) use ($query) {
+                $q->where('brand', 'like', '%' . $query . '%')
+                  ->orWhere('model', 'like', '%' . $query . '%')
+                  ->orWhere('license_plate', 'like', '%' . $query . '%');
+            });
+        }
+
+        if ($brand) {
+            $carsQuery->where('brand', 'like', '%' . $brand . '%');
+            $rentalsQuery->whereHas('car', function ($q) use ($brand) {
+                $q->where('brand', 'like', '%' . $brand . '%');
+            });
+        }
+
+        if ($minPrice) {
+            $carsQuery->where('price_per_day', '>=', $minPrice);
+            $rentalsQuery->whereHas('car', function ($q) use ($minPrice) {
+                $q->where('price_per_day', '>=', $minPrice);
+            });
+        }
+
+        if ($maxPrice) {
+            $carsQuery->where('price_per_day', '<=', $maxPrice);
+            $rentalsQuery->whereHas('car', function ($q) use ($maxPrice) {
+                $q->where('price_per_day', '<=', $maxPrice);
+            });
+        }
+
+        $rentals = $rentalsQuery->orderBy('start_date', 'desc')->paginate(30)->appends([
+            'search' => $query,
+            'brand' => $brand,
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
+        ]);
+        $cars = $carsQuery->paginate(30)->appends([
+            'search' => $query,
+            'brand' => $brand,
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
+        ]);
+
+        // Fetch past rentals for reservation history (end_date in the past)
+        $pastRentals = Rental::where('end_date', '<', now())->orderBy('end_date', 'desc')->get();
+
+        return view('rental.index', ['rentals' => $rentals, 'cars' => $cars, 'pastRentals' => $pastRentals, 'search' => $query, 'brand' => $brand, 'minPrice' => $minPrice, 'maxPrice' => $maxPrice]);
     }
 
     /**

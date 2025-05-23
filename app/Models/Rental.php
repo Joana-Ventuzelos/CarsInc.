@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Rental extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
         'car_id',
@@ -13,6 +16,11 @@ class Rental extends Model
         'end_date',
         'total_price',
         'status',
+    ];
+
+    protected $casts = [
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
     ];
 
     public function user()

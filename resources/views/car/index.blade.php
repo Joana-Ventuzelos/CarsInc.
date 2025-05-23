@@ -44,6 +44,12 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <form method="GET" action="{{ route('car.index') }}" class="mb-4 flex flex-wrap items-center space-x-2">
+                    <input type="text" name="brand" value="{{ request('brand') }}" placeholder="Brand" class="border rounded py-2 px-3 mr-2">
+                    <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
+                    <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
+                    <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Search</button>
+                </form>
                 @if ($cars->isEmpty())
                     <p>No cars available.</p>
                 @else

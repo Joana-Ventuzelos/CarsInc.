@@ -18,11 +18,41 @@ class CarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // For simplicity, using Eloquent directly here, can be refactored similarly
-        // to use application service if needed.
-        $cars = \App\Models\Car::with(['localizacoes', 'bensLocaveis'])->orderBy('brand')->paginate(30);
+        $query = $request->input('search');
+        $brand = $request->input('brand');
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
+
+        $carsQuery = \App\Models\Car::with(['localizacoes', 'bensLocaveis']);
+
+        if ($query) {
+            $carsQuery->where(function ($q) use ($query) {
+                $q->where('brand', 'like', '%' . $query . '%')
+                  ->orWhere('model', 'like', '%' . $query . '%')
+                  ->orWhere('license_plate', 'like', '%' . $query . '%');
+            });
+        }
+
+        if ($brand) {
+            $carsQuery->where('brand', 'like', '%' . $brand . '%');
+        }
+
+        if ($minPrice) {
+            $carsQuery->where('price_per_day', '>=', $minPrice);
+        }
+
+        if ($maxPrice) {
+            $carsQuery->where('price_per_day', '<=', $maxPrice);
+        }
+
+        $cars = $carsQuery->orderBy('brand')->paginate(30)->appends([
+            'search' => $query,
+            'brand' => $brand,
+            'min_price' => $minPrice,
+            'max_price' => $maxPrice,
+        ]);
 
         $characteristics = [];
         foreach ($cars as $car) {
