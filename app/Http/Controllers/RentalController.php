@@ -82,7 +82,7 @@ class RentalController extends Controller
      */
     public function reservationHistory()
     {
-        $pastRentals = Rental::where('end_date', '<', now())->orderBy('end_date', 'desc')->get();
+        $pastRentals = Rental::with('payments')->where('end_date', '<', now())->orderBy('end_date', 'desc')->get();
         return view('reservation.history', ['pastRentals' => $pastRentals]);
     }
 
@@ -175,5 +175,62 @@ class RentalController extends Controller
         // Redirect to the rentals index with a success message
         return redirect()->route('rental.index')->with('success', 'Rental deleted successfully.');
         // return view('rental.index');
+    }
+
+    /**
+     * Store multiple rentals from car selection with days and amounts and process PayPal payment.
+     */
+    public function storeMultiple(Request $request)
+    {
+        $data = $request->validate([
+            'cars' => 'required|array',
+            'cars.*.car_id' => 'required|exists:cars,id',
+            'cars.*.days' => 'required|integer|min:1',
+            'cars.*.amount' => 'required|numeric|min:0',
+        ]);
+
+        $totalAmount = 0;
+        $rentalIds = [];
+
+        foreach ($data['cars'] as $carData) {
+            $car = \App\Models\Car::find($carData['car_id']);
+            if (!$car) {
+                continue;
+            }
+
+            $rental = new Rental();
+            $rental->car_id = $car->id;
+            $rental->start_date = now();
+            $rental->end_date = now()->addDays($carData['days']);
+            $rental->total_price = $carData['amount'];
+            $rental->save();
+
+            $totalAmount += $carData['amount'];
+            $rentalIds[] = $rental->id;
+        }
+
+        // Store rental IDs in session for payment association
+        session(['rental_ids' => $rentalIds]);
+
+        // Create PayPal payment
+        $paypalService = app(\App\Services\PayPalService::class);
+
+        try {
+            $payment = $paypalService->createPayment(
+                $totalAmount,
+                route('payment.success'),
+                route('payment.cancel')
+            );
+
+            foreach ($payment->getLinks() as $link) {
+                if ($link->getRel() === 'approval_url') {
+                    return redirect()->away($link->getHref());
+                }
+            }
+
+            return redirect()->back()->with('error', 'Unable to process PayPal payment.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error processing PayPal payment: ' . $e->getMessage());
+        }
     }
 }

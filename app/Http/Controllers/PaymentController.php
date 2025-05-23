@@ -76,8 +76,12 @@ class PaymentController extends Controller
      */
     public function create(Request $request)
     {
-        $rental_id = $request->query('rental_id');
-        return view('payment.create', ['rental_id' => $rental_id]);
+        $rentalIds = session('rental_ids', []);
+        $rentals = \App\Models\Rental::whereIn('id', $rentalIds)->get();
+
+        $amount = $rentals->sum('total_price');
+
+        return view('payment.create', ['rental_ids' => $rentalIds, 'amount' => $amount]);
     }
 
     /**
@@ -86,24 +90,28 @@ class PaymentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'rental_id' => 'required|exists:rentals,id',
-            'rental_days' => 'required|numeric|min:1',
+            'rental_ids' => 'required|array',
+            'rental_ids.*' => 'required|exists:rentals,id',
+            'amounts' => 'required|array',
+            'amounts.*' => 'required|numeric|min:0',
             'payment_method' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
         ]);
 
-        $amount = $request->rental_days * 50;
+        $totalAmount = array_sum($request->amounts);
 
         if ($request->payment_method === 'paypal') {
             try {
                 $payment = $this->paypalService->createPayment(
-                    $amount,
+                    $totalAmount,
                     route('payment.success'),
                     route('payment.cancel')
                 );
 
                 foreach ($payment->getLinks() as $link) {
                     if ($link->getRel() === 'approval_url') {
+                        // Store rental_ids and amounts in session for success callback
+                        session(['rental_ids' => $request->rental_ids, 'amounts' => $request->amounts]);
                         return redirect()->away($link->getHref());
                     }
                 }
@@ -113,14 +121,16 @@ class PaymentController extends Controller
                 return redirect()->back()->with('error', 'Error processing PayPal payment: ' . $e->getMessage());
             }
         } else {
-            $payment = new \App\Models\Payment();
-            $payment->rental_id = $request->rental_id;
-            $payment->amount = $amount;
-            $payment->payment_method = $request->payment_method;
-            $payment->description = $request->description;
-            $payment->save();
+            foreach ($request->rental_ids as $index => $rentalId) {
+                $payment = new \App\Models\Payment();
+                $payment->rental_id = $rentalId;
+                $payment->amount = $request->amounts[$index];
+                $payment->payment_method = $request->payment_method;
+                $payment->description = $request->description;
+                $payment->save();
+            }
 
-            return redirect()->route('rental.index')->with('success', 'Payment created successfully.');
+            return redirect()->route('rental.index')->with('success', 'Payments created successfully.');
         }
     }
 
@@ -132,6 +142,9 @@ class PaymentController extends Controller
         $paymentId = $request->query('paymentId');
         $payerId = $request->query('PayerID');
 
+        $rentalIds = session('rental_ids', []);
+        $amounts = session('amounts', []);
+
         if (!$paymentId || !$payerId) {
             return redirect()->route('reservation.history')->with('error', 'Payment was not successful.');
         }
@@ -139,15 +152,30 @@ class PaymentController extends Controller
         try {
             $result = $this->paypalService->executePayment($paymentId, $payerId);
 
-            // Save payment record in database
-            $payment = new \App\Models\Payment();
-            $payment->rental_id = session('rental_id');
-            $payment->amount = $result->getTransactions()[0]->getAmount()->getTotal();
-            $payment->payment_method = 'paypal';
-            $payment->description = 'PayPal payment completed';
-            $payment->save();
+            if ($result->getState() === 'approved') {
+                // Update rentals and create payment records
+                foreach ($rentalIds as $index => $rentalId) {
+                    $rental = \App\Models\Rental::find($rentalId);
+                    if ($rental) {
+                        $rental->status = 'confirmed';
+                        $rental->save();
 
-            return redirect()->route('reservation.history')->with('success', 'Payment completed successfully.');
+                        $paymentRecord = new \App\Models\Payment();
+                        $paymentRecord->rental_id = $rentalId;
+                        $paymentRecord->amount = $amounts[$index] ?? 0;
+                        $paymentRecord->payment_method = 'paypal';
+                        $paymentRecord->description = 'PayPal payment';
+                        $paymentRecord->save();
+                    }
+                }
+
+                // Clear session data
+                session()->forget(['rental_ids', 'amounts']);
+
+                return redirect()->route('reservation.history')->with('success', 'Payment successful and reservations confirmed.');
+            } else {
+                return redirect()->route('reservation.history')->with('error', 'Payment was not approved.');
+            }
         } catch (Exception $e) {
             return redirect()->route('reservation.history')->with('error', 'Payment execution failed: ' . $e->getMessage());
         }

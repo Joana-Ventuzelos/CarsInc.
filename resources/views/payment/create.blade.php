@@ -10,16 +10,11 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('payment.store') }}">
                     @csrf
-                    <input type="hidden" name="rental_id" value="{{ request('rental_id') }}" />
 
-                    @php
-                        $rental = null;
-                        $amount = 0;
-                        if(request()->has('rental_id')) {
-                            $rental = \App\Models\Rental::find(request('rental_id'));
-                            $amount = $rental ? $rental->total_price : 0;
-                        }
-                    @endphp
+                    @foreach ($rental_ids as $index => $rentalId)
+                        <input type="hidden" name="rental_ids[]" value="{{ $rentalId }}" />
+                        <input type="hidden" name="amounts[]" value="{{ \App\Models\Rental::find($rentalId)->total_price }}" />
+                    @endforeach
 
                     <div class="mb-4">
                         <label for="rental_days" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Rental Days</label>
@@ -27,8 +22,18 @@
                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Amount</label>
-                        <p class="text-lg font-semibold">€{{ number_format($amount, 2) }}</p>
+                        <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Amounts per Car</label>
+                        <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-2">
+                            @foreach ($rental_ids as $rentalId)
+                                @php
+                                    $rental = \App\Models\Rental::find($rentalId);
+                                @endphp
+                                <li>
+                                    Car: {{ $rental->car->brand }} {{ $rental->car->model }} - Amount: €{{ number_format($rental->total_price, 2) }}
+                                </li>
+                            @endforeach
+                        </ul>
+                        <p class="text-lg font-semibold">Total: €{{ number_format($amount ?? 0, 2) }}</p>
                     </div>
 
                     <div class="mb-4">
