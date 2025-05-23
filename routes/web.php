@@ -34,5 +34,7 @@ Route::resource('payment', PaymentController::class);
 
 require __DIR__.'/auth.php';
 
+Route::get('/reservation-history', [\App\Http\Controllers\RentalController::class, 'reservationHistory'])->name('reservation.history');
+
 
 

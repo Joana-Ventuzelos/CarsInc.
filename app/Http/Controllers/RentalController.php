@@ -78,6 +78,15 @@ class RentalController extends Controller
     }
 
     /**
+     * Display reservation history.
+     */
+    public function reservationHistory()
+    {
+        $pastRentals = Rental::where('end_date', '<', now())->orderBy('end_date', 'desc')->get();
+        return view('reservation.history', ['pastRentals' => $pastRentals]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
