@@ -32,6 +32,12 @@ Route::resource('rental', RentalController::class);
 Route::resource('review', ReviewController::class);
 Route::resource('payment', PaymentController::class);
 
+Route::post('payment/create-paypal-payment', [PaymentController::class, 'createPaypalPayment'])->name('payment.createPaypalPayment');
+Route::post('payment/execute-paypal-payment', [PaymentController::class, 'executePaypalPayment'])->name('payment.executePaypalPayment');
+
+Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');
+Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+
 require __DIR__.'/auth.php';
 
 Route::get('/reservation-history', [\App\Http\Controllers\RentalController::class, 'reservationHistory'])->name('reservation.history');

@@ -123,4 +123,41 @@ class PaymentController extends Controller
             return redirect()->route('rental.index')->with('success', 'Payment created successfully.');
         }
     }
+
+    /**
+     * Handle PayPal payment success callback
+     */
+    public function success(Request $request)
+    {
+        $paymentId = $request->query('paymentId');
+        $payerId = $request->query('PayerID');
+
+        if (!$paymentId || !$payerId) {
+            return redirect()->route('payment.create')->with('error', 'Payment was not successful.');
+        }
+
+        try {
+            $result = $this->paypalService->executePayment($paymentId, $payerId);
+
+            // Save payment record in database
+            $payment = new \App\Models\Payment();
+            $payment->rental_id = session('rental_id');
+            $payment->amount = $result->getTransactions()[0]->getAmount()->getTotal();
+            $payment->payment_method = 'paypal';
+            $payment->description = 'PayPal payment completed';
+            $payment->save();
+
+            return redirect()->route('rental.index')->with('success', 'Payment completed successfully.');
+        } catch (Exception $e) {
+            return redirect()->route('payment.create')->with('error', 'Payment execution failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Handle PayPal payment cancellation
+     */
+    public function cancel()
+    {
+        return redirect()->route('payment.create')->with('error', 'Payment was cancelled.');
+    }
 }

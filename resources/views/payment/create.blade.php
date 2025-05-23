@@ -42,6 +42,8 @@
                         </select>
                     </div>
 
+                    <div id="paypal-button-container" class="mb-4" style="display:none;"></div>
+
                     <div class="mb-4">
                         <label for="description" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Description (optional)</label>
                         <textarea id="description" name="description" rows="3"
@@ -53,7 +55,7 @@
                             class="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
                             Reservation History
                         </a>
-                        <button type="submit"
+                        <button type="submit" id="submit-button"
                             class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
                             Pay Now
                         </button>
@@ -62,4 +64,75 @@
             </div>
         </div>
     </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id={{ config('services.paypal.client_id') }}&currency=USD"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const paymentMethodSelect = document.getElementById('payment_method');
+            const paypalButtonContainer = document.getElementById('paypal-button-container');
+            const submitButton = document.getElementById('submit-button');
+            const form = document.querySelector('form');
+
+            function togglePayPalButton() {
+                if (paymentMethodSelect.value === 'paypal') {
+                    paypalButtonContainer.style.display = 'block';
+                    submitButton.style.display = 'none';
+                } else {
+                    paypalButtonContainer.style.display = 'none';
+                    submitButton.style.display = 'inline-block';
+                }
+            }
+
+            paymentMethodSelect.addEventListener('change', togglePayPalButton);
+
+            togglePayPalButton();
+
+            paypal.Buttons({
+                createOrder: function (data, actions) {
+                    const rentalDays = document.getElementById('rental_days').value;
+                    const amount = rentalDays * 50;
+
+                    return fetch('{{ route('payment.createPaypalPayment') }}', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            amount: amount
+                        })
+                    }).then(function (res) {
+                        return res.json();
+                    }).then(function (data) {
+                        if (data.approval_url) {
+                            window.location.href = data.approval_url;
+                        } else {
+                            alert('Error creating PayPal payment.');
+                        }
+                    });
+                },
+                onApprove: function (data, actions) {
+                    return fetch('{{ route('payment.executePaypalPayment') }}', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            paymentId: data.paymentID,
+                            PayerID: data.payerID
+                        })
+                    }).then(function (res) {
+                        return res.json();
+                    }).then(function (data) {
+                        if (data.success) {
+                            window.location.href = '{{ route('rental.index') }}';
+                        } else {
+                            alert('Payment execution failed: ' + data.error);
+                        }
+                    });
+                }
+            }).render('#paypal-button-container');
+        });
+    </script>
 </x-app-layout>
