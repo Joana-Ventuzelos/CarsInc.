@@ -89,48 +89,11 @@
 
             paypal.Buttons({
                 createOrder: function (data, actions) {
-                    const rentalDays = document.getElementById('rental_days').value;
-                    const amount = rentalDays * 50;
-
-                    return fetch('{{ route('payment.createPaypalPayment') }}', {
-                        method: 'post',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            amount: amount
-                        })
-                    }).then(function (res) {
-                        return res.json();
-                    }).then(function (data) {
-                        if (data.approval_url) {
-                            window.location.href = data.approval_url;
-                        } else {
-                            alert('Error creating PayPal payment.');
-                        }
-                    });
+                    // Instead of creating a PayPal payment, immediately redirect to reservation history
+                    window.location.href = '{{ route('reservation.history') }}';
                 },
                 onApprove: function (data, actions) {
-                    return fetch('{{ route('payment.executePaypalPayment') }}', {
-                        method: 'post',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            paymentId: data.paymentID,
-                            PayerID: data.payerID
-                        })
-                    }).then(function (res) {
-                        return res.json();
-                    }).then(function (data) {
-                        if (data.success) {
-                            window.location.href = '{{ route('rental.index') }}';
-                        } else {
-                            alert('Payment execution failed: ' + data.error);
-                        }
-                    });
+                    // This will not be called since createOrder redirects immediately
                 }
             }).render('#paypal-button-container');
         });

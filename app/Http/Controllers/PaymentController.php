@@ -133,7 +133,7 @@ class PaymentController extends Controller
         $payerId = $request->query('PayerID');
 
         if (!$paymentId || !$payerId) {
-            return redirect()->route('payment.create')->with('error', 'Payment was not successful.');
+            return redirect()->route('reservation.history')->with('error', 'Payment was not successful.');
         }
 
         try {
@@ -147,9 +147,9 @@ class PaymentController extends Controller
             $payment->description = 'PayPal payment completed';
             $payment->save();
 
-            return redirect()->route('rental.index')->with('success', 'Payment completed successfully.');
+            return redirect()->route('reservation.history')->with('success', 'Payment completed successfully.');
         } catch (Exception $e) {
-            return redirect()->route('payment.create')->with('error', 'Payment execution failed: ' . $e->getMessage());
+            return redirect()->route('reservation.history')->with('error', 'Payment execution failed: ' . $e->getMessage());
         }
     }
 
@@ -158,6 +158,6 @@ class PaymentController extends Controller
      */
     public function cancel()
     {
-        return redirect()->route('payment.create')->with('error', 'Payment was cancelled.');
+        return redirect()->route('reservation.history')->with('error', 'Payment was cancelled.');
     }
 }
