@@ -3,20 +3,72 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\PayPalService;
+use Exception;
+use Illuminate\Http\JsonResponse;
 
 class PaymentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $paypalService;
+
+    public function __construct(PayPalService $paypalService)
     {
-        // Fetch all payments from the database
-        // $payments = Payment::all();
-          $payments = \App\Models\Payment::paginate(30);
-        // Return the view with the payments data
-        return view('payment.index', compact('payments'));
-        // return view('payment.index', compact('payments'));
+        $this->paypalService = $paypalService;
+    }
+
+    /**
+     * API endpoint to create PayPal payment
+     */
+    public function createPaypalPayment(Request $request): JsonResponse
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            $payment = $this->paypalService->createPayment(
+                $request->amount,
+                route('payment.success'),
+                route('payment.cancel')
+            );
+
+            foreach ($payment->getLinks() as $link) {
+                if ($link->getRel() === 'approval_url') {
+                    return response()->json(['approval_url' => $link->getHref()]);
+                }
+            }
+
+            return response()->json(['error' => 'Unable to process PayPal payment.'], 500);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Error processing PayPal payment: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * API endpoint to execute PayPal payment
+     */
+    public function executePaypalPayment(Request $request): JsonResponse
+    {
+        $request->validate([
+            'paymentId' => 'required|string',
+            'PayerID' => 'required|string',
+        ]);
+
+        try {
+            $result = $this->paypalService->executePayment($request->paymentId, $request->PayerID);
+
+            // Save payment record in database
+            $payment = new \App\Models\Payment();
+            $payment->rental_id = $request->session()->get('rental_id');
+            $payment->amount = $result->getTransactions()[0]->getAmount()->getTotal();
+            $payment->payment_method = 'paypal';
+            $payment->description = 'PayPal payment completed';
+            $payment->save();
+
+            return response()->json(['success' => true, 'message' => 'Payment completed successfully.']);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Payment execution failed: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -35,81 +87,40 @@ class PaymentController extends Controller
     {
         $request->validate([
             'rental_id' => 'required|exists:rentals,id',
-            'amount' => 'required|numeric|min:0',
+            'rental_days' => 'required|numeric|min:1',
             'payment_method' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
         ]);
 
-        $payment = new \App\Models\Payment();
-        $payment->rental_id = $request->rental_id;
-        $payment->amount = $request->amount;
-        $payment->payment_method = $request->payment_method;
-        $payment->description = $request->description;
-        $payment->save();
+        $amount = $request->rental_days * 50;
 
-        return redirect()->route('rental.index')->with('success', 'Payment created successfully.');
-    }
+        if ($request->payment_method === 'paypal') {
+            try {
+                $payment = $this->paypalService->createPayment(
+                    $amount,
+                    route('payment.success'),
+                    route('payment.cancel')
+                );
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        // Fetch the payment from the database
-        // $payment = Payment::findOrFail($id);
-        // Return the view with the payment data
-        // return view('payment.show', compact('payment'));
-        return view('payment.show');
-        return view('payment.show', compact('payment'));
-    }
+                foreach ($payment->getLinks() as $link) {
+                    if ($link->getRel() === 'approval_url') {
+                        return redirect()->away($link->getHref());
+                    }
+                }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        // Fetch the payment from the database
-        // $payment = Payment::findOrFail($id);
+                return redirect()->back()->with('error', 'Unable to process PayPal payment.');
+            } catch (Exception $e) {
+                return redirect()->back()->with('error', 'Error processing PayPal payment: ' . $e->getMessage());
+            }
+        } else {
+            $payment = new \App\Models\Payment();
+            $payment->rental_id = $request->rental_id;
+            $payment->amount = $amount;
+            $payment->payment_method = $request->payment_method;
+            $payment->description = $request->description;
+            $payment->save();
 
-        // Return the view for editing the payment
-        return view('payment.edit', compact('payment'));
-        return view('payment.edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        // Validate the request data
-        $request->validate([
-            'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-        ]);
-
-        // Update the payment in the database
-        // $payment = Payment::findOrFail($id);
-        // $payment->update($request->all());
-
-        // Redirect to the payments index with a success message
-        return redirect()->route('payment.index')->with('success', 'Payment updated successfully.');
-        return view('payment.index');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        // Fetch the payment from the database
-        // $payment = Payment::findOrFail($id);
-
-        // Delete the payment from the database
-        // $payment->delete();
-
-        // Redirect to the payments index with a success message
-        return redirect()->route('payment.index')->with('success', 'Payment deleted successfully.');
-        return view('payment.index');
+            return redirect()->route('rental.index')->with('success', 'Payment created successfully.');
+        }
     }
 }
