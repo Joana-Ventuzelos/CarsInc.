@@ -29,6 +29,26 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'g-recaptcha-response' => ['required', 'string', function ($attribute, $value, $fail) {
+                $response = $value;
+                $secret = env('RECAPTCHA_SECRET_KEY');
+                $remoteip = request()->ip();
+
+                $client = new \GuzzleHttp\Client(['verify' => false]);
+                $res = $client->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'form_params' => [
+                        'secret' => $secret,
+                        'response' => $response,
+                        'remoteip' => $remoteip,
+                    ],
+                ]);
+
+                $body = json_decode((string) $res->getBody());
+
+                if (! $body->success) {
+                    $fail('The reCAPTCHA verification failed. Please try again.');
+                }
+            }],
         ];
     }
 
