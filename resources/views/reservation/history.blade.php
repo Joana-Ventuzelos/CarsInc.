@@ -15,9 +15,11 @@
                         <thead>
                             <tr>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Car</th>
+                                <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Features</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Start Date</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">End Date</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Total Price</th>
+                                <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Payment Method</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Status</th>
                             </tr>
                         </thead>
@@ -25,9 +27,21 @@
                             @foreach($pastRentals as $rental)
                                 <tr>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ $rental->car->brand }} {{ $rental->car->model }}</td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        @foreach($rental->car->caracteristicas as $feature)
+                                            <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 mr-1">{{ $feature->name }}</span>
+                                        @endforeach
+                                    </td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ $rental->start_date->format('Y-m-d') }}</td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ $rental->end_date->format('Y-m-d') }}</td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">€{{ number_format($rental->total_price, 2) }}</td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        @if($rental->payments->isNotEmpty())
+                                            {{ ucfirst($rental->payments->first()->payment_method) }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ ucfirst($rental->status) }}</td>
                                 </tr>
                             @endforeach
