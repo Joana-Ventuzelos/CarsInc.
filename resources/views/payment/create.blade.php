@@ -8,8 +8,7 @@
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form method="POST" action="{{ route('payment.store') }}">
-                    @csrf
+<form id="payment-form" method="POST" action="{{ route('payment.store') }}">                    @csrf
 
                     @foreach ($rental_ids as $index => $rentalId)
                         <input type="hidden" name="rental_ids[]" value="{{ $rentalId }}" />
@@ -45,8 +44,12 @@
                                 </li>
                             @endforeach
                         </ul>
-                        <p class="text-lg font-semibold">Total: €{{ number_format($amount ?? 0, 2) }}</p>
-                    </div>
+<p class="text-lg font-semibold">
+    Total: €
+    {{ number_format(
+        collect($rental_ids)->map(fn($id) => \App\Models\Rental::find($id)->total_price)->sum(), 2
+    ) }}
+</p>                    </div>
 
                     <div class="mb-4">
                         <label for="description" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Description (optional)</label>

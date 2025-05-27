@@ -26,23 +26,39 @@
                         <tbody>
                             @foreach($pastRentals as $rental)
                                 <tr>
-                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ $rental->car->brand }} {{ $rental->car->model }}</td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
-                                        @foreach($rental->car->caracteristicas as $feature)
-                                            <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 mr-1">{{ $feature->name }}</span>
-                                        @endforeach
+                                        {{ optional($rental->car)->brand ?? 'N/A' }} {{ optional($rental->car)->model ?? '' }}
                                     </td>
-                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ $rental->start_date->format('Y-m-d') }}</td>
-                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ $rental->end_date->format('Y-m-d') }}</td>
-                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">€{{ number_format($rental->total_price, 2) }}</td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
-                                        @if($rental->payments->isNotEmpty())
+                                        @if(optional($rental->car) && $rental->car->caracteristicas && $rental->car->caracteristicas->count())
+                                            @foreach($rental->car->caracteristicas as $feature)
+                                                <span class="inline-block bg-gray-200 dark:bg-gray-700 rounded px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-300 mr-1">
+                                                    {{ $feature->name ?? $feature->nome ?? 'N/A' }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        {{ $rental->start_date ? $rental->start_date->format('Y-m-d') : 'N/A' }}
+                                    </td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        {{ $rental->end_date ? $rental->end_date->format('Y-m-d') : 'N/A' }}
+                                    </td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        €{{ number_format($rental->total_price ?? 0, 2) }}
+                                    </td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        @if($rental->payments && $rental->payments->isNotEmpty())
                                             {{ ucfirst($rental->payments->first()->payment_method) }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
-                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">{{ ucfirst($rental->status) }}</td>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        {{ ucfirst($rental->status ?? 'N/A') }}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
