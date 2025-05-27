@@ -33,23 +33,29 @@
                     <div id="paypal-button-container" class="mb-4" style="display:none;"></div>
 
                     <div class="mb-4">
-                        <label class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Amounts per Car</label>
+
                         <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 mb-2">
                             @foreach ($rental_ids as $rentalId)
                                 @php
                                     $rental = \App\Models\Rental::find($rentalId);
                                 @endphp
                                 <li>
-                                    Car: {{ $rental->car->brand }} {{ $rental->car->model }} - Amount: €{{ number_format($rental->total_price, 2) }}
+                                    Car: {{ $rental->car->brand }} {{ $rental->car->model }} - Amount: €{{ number_format($rental*$total_price, 2) }}
                                 </li>
                             @endforeach
                         </ul>
+@php
+    $total_price = collect($rental_ids)->reduce(function ($carry, $id) {
+        $rental = \App\Models\Rental::find($id);
+        return $carry + ($rental->rental_days * $rental->car->price);
+    }, 0);
+@endphp
+
 <p class="text-lg font-semibold">
-    Total: €
-    {{ number_format(
-        collect($rental_ids)->map(fn($id) => \App\Models\Rental::find($id)->total_price)->sum(), 2
-    ) }}
-</p>                    </div>
+    Total: €{{ number_format($total_price, 2) }}
+</p>
+
+</div>
 
                     <div class="mb-4">
                         <label for="description" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">Description (optional)</label>
@@ -96,7 +102,8 @@
 
         paypal.Buttons({
             createOrder: function (data, actions) {
-                const totalAmount = parseFloat(document.querySelector('p.text-lg').textContent.replace('Total: €', '')) || 0;
+                const totalText = document.querySelector('p.text-lg').textContent.trim();
+                const totalAmount = parseFloat(totalText.replace('Total: €', '').replace(',', '').trim()) || 10;
 
                 return actions.order.create({
                     purchase_units: [{
