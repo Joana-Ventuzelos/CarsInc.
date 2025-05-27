@@ -83,7 +83,7 @@
                                     @endforeach
                                 </div>
                                 <div class="mt-4">
-                                    <a href="{{ route('payment.create', ['rental_id' => $car->id]) }}" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
+                                    <a href="{{ route('rental.create', ['rental_id' => $car->id]) }}" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
                                         Payment
                                     </a>
                                 </div>

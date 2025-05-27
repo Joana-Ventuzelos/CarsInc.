@@ -2,78 +2,91 @@
 
 namespace App\Services;
 
-use PayPal\Rest\ApiContext;
-use PayPal\Auth\OAuthTokenCredential;
-use PayPal\Api\Amount;
-use PayPal\Api\Payer;
-use PayPal\Api\Payment;
-use PayPal\Api\PaymentExecution;
-use PayPal\Api\RedirectUrls;
-use PayPal\Api\Transaction;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 class PayPalService
 {
-    private $apiContext;
+    protected $provider;
 
     public function __construct()
     {
-        $this->apiContext = new ApiContext(
-            new OAuthTokenCredential(
-                config('services.paypal.client_id'),
-                config('services.paypal.secret')
-            )
-        );
+        // Instância do PayPalClient
+        $this->provider = new PayPalClient;
+        //Defino as credenciais(extraio do config/paypal.php)
+        $this->provider->setApiCredentials(config('paypal'));
+        //Uso as credenciais para enviar uma requisição ao PayPal e obter um token de acesso (access_token).
+        $this->provider->getAccessToken();
+    }
 
-        $this->apiContext->setConfig([
-            'mode' => config('services.paypal.mode', 'sandbox'),
+    /**
+     * Cria uma nova ordem de pagamento no PayPal
+     *
+     * @param string $returnUrl
+     * @param string $cancelUrl
+     * @param float $amount
+     * @param string $currency
+     * @return array
+     */
+    public function createOrder($returnUrl, $cancelUrl, $amount = 1.00, $currency = 'EUR')
+    {
+        $response = $this->provider->createOrder([
+            "intent" => "CAPTURE",
+            "application_context" => [
+                "return_url" => $returnUrl,
+                "cancel_url" => $cancelUrl,
+            ],
+            "purchase_units" => [
+                0 => [
+                    "amount" => [
+                        "currency_code" => $currency,
+                        "value" => $amount
+                    ]
+                ]
+            ]
         ]);
+
+        return $response;
     }
 
-    public function createPayment($amount, $returnUrl, $cancelUrl)
+    /**
+     * Captura a transação do PayPal após aprovação
+     *
+     * @param string $token
+     * @return array
+     */
+    public function capturePaymentOrder($token)
     {
-        $payer = new Payer();
-        $payer->setPaymentMethod('paypal');
-
-        $amountObj = new Amount();
-        $amountObj->setTotal($amount);
-        $amountObj->setCurrency('USD');
-
-        $transaction = new Transaction();
-        $transaction->setAmount($amountObj);
-        $transaction->setDescription('Payment description');
-
-        $redirectUrls = new RedirectUrls();
-        $redirectUrls->setReturnUrl($returnUrl);
-        $redirectUrls->setCancelUrl($cancelUrl);
-
-        $payment = new Payment();
-        $payment->setIntent('sale')
-            ->setPayer($payer)
-            ->setTransactions([$transaction])
-            ->setRedirectUrls($redirectUrls);
-
-        try {
-            $payment->create($this->apiContext);
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
-
-        return $payment;
+        return $this->provider->capturePaymentOrder($token);
     }
 
-    public function executePayment($paymentId, $payerId)
-    {
-        $payment = Payment::get($paymentId, $this->apiContext);
 
-        $execution = new PaymentExecution();
-        $execution->setPayerId($payerId);
+    /**
+     * Extrai o nome do pagador (payer) e o valor pago a partir de uma resposta da API do PayPal.
+     *
+     *
+     * @param array $response
+     * @return array com "payerName' e 'amount'
+     */
+    public function payerNameAndAmout($response) {
+        $payerName = '';
+        $amount = '';
 
-        try {
-            $result = $payment->execute($execution, $this->apiContext);
-        } catch (\Exception $ex) {
-            throw $ex;
+        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+            $payerName = '';
+            if (isset($response['payer']['name'])) {
+                $firstName = $response['payer']['name']['given_name'] ?? '';
+                $lastName = $response['payer']['name']['surname'] ?? '';
+                $payerName = trim($firstName . ' ' . $lastName);
+            }
+
+            $amount = '';
+            $currency = '';
+            if (isset($response['purchase_units'][0]['payments']['captures'][0]['amount'])) {
+                $amountData = $response['purchase_units'][0]['payments']['captures'][0]['amount'];
+                $amount = $amountData['value'] ?? '';
+                $currency = $amountData['currency_code'] ?? '';
+            }
         }
-
-        return $result;
+        return compact('payerName', 'amount');
     }
 }

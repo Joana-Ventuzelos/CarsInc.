@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -7,6 +8,8 @@ use App\Models\Rental;
 use App\Models\Car;
 use App\Models\Marca;
 use App\Models\BensLocaveis;
+use Illuminate\Support\Facades\Auth;
+
 
 class RentalController extends Controller
 {
@@ -26,14 +29,14 @@ class RentalController extends Controller
         if ($query) {
             $carsQuery->where(function ($q) use ($query) {
                 $q->where('brand', 'like', '%' . $query . '%')
-                  ->orWhere('model', 'like', '%' . $query . '%')
-                  ->orWhere('license_plate', 'like', '%' . $query . '%');
+                    ->orWhere('model', 'like', '%' . $query . '%')
+                    ->orWhere('license_plate', 'like', '%' . $query . '%');
             });
 
             $rentalsQuery->whereHas('car', function ($q) use ($query) {
                 $q->where('brand', 'like', '%' . $query . '%')
-                  ->orWhere('model', 'like', '%' . $query . '%')
-                  ->orWhere('license_plate', 'like', '%' . $query . '%');
+                    ->orWhere('model', 'like', '%' . $query . '%')
+                    ->orWhere('license_plate', 'like', '%' . $query . '%');
             });
         }
 
@@ -89,11 +92,35 @@ class RentalController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
     public function create()
     {
-        // Return the view to create a new rental
-        return view('rental.create');
-        // return view('rental.create', compact('rentals'));
+        $cars = \App\Models\Car::where('is_available', true)->get();
+        return view('rental.create', compact('cars'));
+    }
+
+    public function storeAndRedirect(Request $request)
+    {
+        $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'days' => 'required|integer|min:1',
+            'amount' => 'required|numeric|min:0.01',
+        ]);
+
+        // Create rental
+        $rental = \App\Models\Rental::create([
+            'car_id' => $request->car_id,
+            'user_id' => Auth::id(),
+            'start_date' => now(),
+            'end_date' => now()->addDays($request->days),
+            'total_price' => $request->amount,
+        ]);
+
+        // Store rental id in session for payment association
+        session(['rental_ids' => [$rental->id]]);
+
+        // Redirect to transaction page (PayPal button)
+        return redirect()->route('createTransaction');
     }
 
     /**
@@ -213,24 +240,25 @@ class RentalController extends Controller
         session(['rental_ids' => $rentalIds]);
 
         // Create PayPal payment
-        $paypalService = app(\App\Services\PayPalService::class);
+        // $paypalService = app(\App\Services\PayPalService::class);
 
-        try {
-            $payment = $paypalService->createPayment(
-                $totalAmount,
-                route('payment.success'),
-                route('payment.cancel')
-            );
+        //     try {
+        //         $payment = $paypalService->createPayment(
+        //             $totalAmount,
+        //             route('payment.success'),
+        //             route('payment.cancel')
+        //         );
 
-            foreach ($payment->getLinks() as $link) {
-                if ($link->getRel() === 'approval_url') {
-                    return redirect()->away($link->getHref());
-                }
-            }
+        //         foreach ($payment->getLinks() as $link) {
+        //             if ($link->getRel() === 'approval_url') {
+        //                 return redirect()->away($link->getHref());
+        //             }
+        //         }
 
-            return redirect()->back()->with('error', 'Unable to process PayPal payment.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error processing PayPal payment: ' . $e->getMessage());
-        }
+        //         return redirect()->back()->with('error', 'Unable to process PayPal payment.');
+        //     } catch (\Exception $e) {
+        //         return redirect()->back()->with('error', 'Error processing PayPal payment: ' . $e->getMessage());
+        //     }
+        // }
     }
 }

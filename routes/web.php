@@ -9,6 +9,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReservationHistoryController;
+use App\Http\Controllers\PayPalController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -31,17 +32,18 @@ Route::resource('users', UserController::class);
 Route::resource('car', CarController::class);
 Route::resource('rental', RentalController::class);
 Route::resource('review', ReviewController::class);
-Route::resource('payment', PaymentController::class);
 
+Route::get('rental/create', [RentalController::class, 'create'])->name('rental.create');
+Route::post('rental/store-and-redirect', [RentalController::class, 'storeAndRedirect'])->name('rental.storeAndRedirect');
 Route::middleware(['auth'])->group(function () {
     Route::get('/reservation-history', [ReservationHistoryController::class, 'index'])->name('reservation.history');
+
+Route::get('transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+Route::get('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
+Route::get('finish-transaction', [PayPalController::class, 'finishTransaction'])->name('finishTransaction');
 });
-Route::post('payment/create-paypal-payment', [PaymentController::class, 'createPaypalPayment'])->name('payment.createPaypalPayment');
-Route::post('payment/execute-paypal-payment', [PaymentController::class, 'executePaypalPayment'])->name('payment.executePaypalPayment');
-
-Route::get('payment/success', [PaymentController::class, 'success'])->name('payment.success');
-Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
-
 require __DIR__.'/auth.php';
 
 Route::get('/reservation-history', [\App\Http\Controllers\RentalController::class, 'reservationHistory'])->name('reservation.history');
