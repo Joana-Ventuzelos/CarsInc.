@@ -30,28 +30,49 @@ class PayPalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function processTransaction()
-    {
-         $response = $this->payPalService->createOrder(
-            route('successTransaction'),
-            route('cancelTransaction')
-        );
 
-        if (isset($response['id']) && $response['id'] != null) {
-            // Redireciona para a URL de aprovação do PayPal
-            foreach ($response['links'] as $link) {
-                if ($link['rel'] == 'approve') {
-                    return redirect()->away($link['href']);
-                }
+public function processTransaction(Request $request)
+{
+    // 1. Validate the incoming data
+   $data = $request->validate([
+    'car_id' => 'required|exists:cars,id',
+    'days' => 'required|integer|min:1',
+]);
+
+    // 2. Get the car and calculate the amount
+    $car = \App\Models\Car::findOrFail($data['car_id']);
+    $amount = $car->price_per_day * $data['days'];
+
+    // 3. Optionally, store rental info in session for later use
+    session([
+        'pending_rental' => [
+            'car_id' => $car->id,
+            'days' => $data['days'],
+            'amount' => $amount,
+        ]
+    ]);
+
+    // 4. Create the PayPal order with the calculated amount
+    $response = $this->payPalService->createOrder(
+        route('successTransaction'),
+        route('cancelTransaction'),
+        $amount, // Pass the calculated amount
+        'EUR'
+    );
+
+    if (isset($response['id']) && $response['id'] != null) {
+        foreach ($response['links'] as $link) {
+            if ($link['rel'] == 'approve') {
+                return redirect()->away($link['href']);
             }
-            logger()->error('Erro ao processar a transação - Links não encontrados ou formato inesperado', ['response' => $response]);
-            return redirect()->route('createTransaction')->with('error', 'Algo deu errado.');
-        } else {
-            logger()->error('Erro na criação da ordem de pagamento', ['response' => $response]);
-
-            return redirect()->route('createTransaction')->with('error', $response['message'] ?? 'Algo deu errado.');
         }
+        logger()->error('Erro ao processar a transação - Links não encontrados ou formato inesperado', ['response' => $response]);
+        return redirect()->route('createTransaction')->with('error', 'Algo deu errado.');
+    } else {
+        logger()->error('Erro na criação da ordem de pagamento', ['response' => $response]);
+        return redirect()->route('createTransaction')->with('error', $response['message'] ?? 'Algo deu errado.');
     }
+}
     /**
      * Sucesso da transação.
      *

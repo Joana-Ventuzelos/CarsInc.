@@ -29,9 +29,38 @@
 
             <!-- Page Content -->
             <main>
-
                 {{ $slot }}
             </main>
         </div>
+
+        <footer class="bg-gray-900 text-gray-200 mt-12">
+            <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Sobre Nós</h3>
+                    <p class="text-sm max-w-xs">
+                        Somos uma empresa dedicada ao aluguer de carros, oferecendo qualidade, segurança e atendimento personalizado para tornar sua experiência inesquecível.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Contactos</h3>
+                    <ul class="text-sm">
+                        <li>Email: <a href="mailto:info@cars20.pt" class="underline hover:text-yellow-400">info@cars20.pt</a></li>
+                        <li>Telefone: <a href="tel:+351912345678" class="underline hover:text-yellow-400">+351 912 345 678</a></li>
+                        <li>Rua: Rua das Viaturas, 123, 1000-000 Lisboa</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-2">Links Úteis</h3>
+                    <ul class="text-sm">
+                        <li><a href="{{ route('rental.index') }}" class="underline hover:text-yellow-400">Aluguer de Carros</a></li>
+                        <li><a href="{{ route('reservation.history') }}" class="underline hover:text-yellow-400">Minhas Reservas</a></li>
+                        <li><a href="#" class="underline hover:text-yellow-400">Termos &amp; Condições</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center text-xs text-gray-400 py-2 border-t border-gray-800 mt-4">
+                &copy; {{ date('Y') }} Cars 2.0. Todos os direitos reservados.
+            </div>
+        </footer>
     </body>
 </html>

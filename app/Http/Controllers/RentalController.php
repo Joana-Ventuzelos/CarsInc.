@@ -108,13 +108,14 @@ class RentalController extends Controller
         ]);
 
         // Create rental
-        $rental = \App\Models\Rental::create([
-            'car_id' => $request->car_id,
-            'user_id' => Auth::id(),
-            'start_date' => now(),
-            'end_date' => now()->addDays($request->days),
-            'total_price' => $request->amount,
-        ]);
+       $rental = \App\Models\Rental::create([
+    'car_id' => $request->car_id,
+    'user_id' => Auth::id(),
+    'start_date' => now(),
+    'end_date' => now()->addDays((int) $request->days)->toDateTimeString(), // cast to int
+    'total_price' => $request->amount,
+]);
+
 
         // Store rental id in session for payment association
         session(['rental_ids' => [$rental->id]]);
