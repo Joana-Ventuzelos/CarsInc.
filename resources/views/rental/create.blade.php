@@ -42,25 +42,26 @@
                 </form>
             </div>
             <div class="mb-4 flex justify-end">
-    <a href="{{ route('reservation.history') }}"
-   class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded transition">
-    Ver Reservas
-</a>
+                <a href="{{ route('reservation.history') }}"
+                   class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded transition ml-auto">
+                    Ver Reservas
+                </a>
+            </div>
         </div>
-    </div>
 
-    <script>
-        function updateAmount() {
-            const carSelect = document.getElementById('car_id');
-            const daysInput = document.getElementById('days');
-            const amountInput = document.getElementById('amount');
-            const selectedOption = carSelect.options[carSelect.selectedIndex];
-            const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
-            const days = parseInt(daysInput.value) || 1;
-            amountInput.value = (price * days).toFixed(2);
-        }
-        document.getElementById('car_id').addEventListener('change', updateAmount);
-        document.getElementById('days').addEventListener('input', updateAmount);
-        window.onload = updateAmount;
-    </script>
+        <script>
+            function updateAmount() {
+                const carSelect = document.getElementById('car_id');
+                const daysInput = document.getElementById('days');
+                const amountInput = document.getElementById('amount');
+                const selectedOption = carSelect.options[carSelect.selectedIndex];
+                const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+                const days = parseInt(daysInput.value) || 1;
+                amountInput.value = (price * days).toFixed(2);
+            }
+            document.getElementById('car_id').addEventListener('change', updateAmount);
+            document.getElementById('days').addEventListener('input', updateAmount);
+            window.onload = updateAmount;
+        </script>
+    </div>
 </x-app-layout>

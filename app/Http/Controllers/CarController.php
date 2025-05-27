@@ -57,6 +57,10 @@ class CarController extends Controller
         $characteristics = [];
         foreach ($cars as $car) {
             $characteristics[$car->id] = $car->getCharacteristics();
+            $characteristics[$car->id]['bens_locaveis'] = \App\Models\BensLocaveis::with('marca')
+                ->whereHas('marca', function($q) use ($car) {
+                    $q->where('nome', $car->brand);
+                })->get();
         }
 
         return view('car.index', compact('cars', 'characteristics'));
