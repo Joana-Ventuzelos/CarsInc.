@@ -8,6 +8,7 @@ use App\Http\Controllers\RentalController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReservationHistoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,6 +33,9 @@ Route::resource('rental', RentalController::class);
 Route::resource('review', ReviewController::class);
 Route::resource('payment', PaymentController::class);
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/reservation-history', [ReservationHistoryController::class, 'index'])->name('reservation.history');
+});
 Route::post('payment/create-paypal-payment', [PaymentController::class, 'createPaypalPayment'])->name('payment.createPaypalPayment');
 Route::post('payment/execute-paypal-payment', [PaymentController::class, 'executePaypalPayment'])->name('payment.executePaypalPayment');
 
