@@ -89,15 +89,40 @@
                                 <div id="characteristics-{{ $car->id }}" class="hidden mt-2 bg-gray-100 text-black p-2 rounded">
                                     @if(isset($characteristics[$car->id]) && $characteristics[$car->id])
                                         <p><strong>Brand:</strong> {{ $characteristics[$car->id]['marca']->nome }}</p>
+                                        <p><strong>License Plate:</strong> {{ $car->license_plate }}</p>
                                         <p><strong>Observation:</strong> {{ $characteristics[$car->id]['marca']->observacao }}</p>
                                         <p><strong>Rentable Assets:</strong></p>
-                                        <ul class="list-disc list-inside text-sm">
-                                            @foreach ($characteristics[$car->id]['bens_locaveis'] as $bem)
-                                                <li>
-                                                    Model: {{ $bem->modelo }}, Color: {{ $bem->cor }}, Passengers: {{ $bem->numero_passageiros }}, Fuel: {{ $bem->combustivel }}, Doors: {{ $bem->numero_portas }}, Transmission: {{ $bem->transmissao }}, Year: {{ $bem->ano }}, Daily Price: €{{ number_format($bem->preco_diario, 2) }}
-                                                </li>
-                                            @endforeach
-                                        </ul>
+                                        @php
+                                            $bensLocaveisForCar = $characteristics[$car->id]['bens_locaveis']->filter(function($bem) use ($car) {
+                                                return isset($bem->marca)
+                                                    && $bem->marca->nome === $car->brand
+                                                    && (
+                                                        (isset($bem->registo_unico_publico) && $bem->registo_unico_publico === $car->license_plate)
+                                                        || (isset($bem->license_plate) && $bem->license_plate === $car->license_plate)
+                                                    );
+                                            });
+                                        @endphp
+                                        @if($bensLocaveisForCar->count())
+                                            <ul class="list-disc list-inside text-sm">
+                                                @foreach ($bensLocaveisForCar as $bem)
+                                                    <li>
+                                                        <strong>Brand:</strong> {{ $bem->marca->nome ?? '-' }},
+                                                        <strong>Model:</strong> {{ $bem->modelo }},
+                                                        <strong>Color:</strong> {{ $bem->cor }},
+                                                        <strong>License Plate:</strong> {{ $bem->registo_unico_publico ?? $bem->license_plate }},
+                                                        <strong>Passengers:</strong> {{ $bem->numero_passageiros }},
+                                                        <strong>Fuel:</strong> {{ $bem->combustivel }},
+                                                        <strong>Doors:</strong> {{ $bem->numero_portas }},
+                                                        <strong>Transmission:</strong> {{ $bem->transmissao }},
+                                                        <strong>Year:</strong> {{ $bem->ano }},
+                                                        <strong>Daily Price:</strong> €{{ number_format($bem->preco_diario, 2) }},
+                                                        <strong>Observation:</strong> {{ $bem->observacao }}
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @else
+                                            <p class="text-sm text-gray-500">No rentable assets for this car.</p>
+                                        @endif
                                     @else
                                         <p>No characteristics available.</p>
                                     @endif
