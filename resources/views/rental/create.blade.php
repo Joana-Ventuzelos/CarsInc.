@@ -38,10 +38,7 @@
                     <div class="mb-4">
                         <label for="payment_method" class="block font-bold mb-2">Payment Method</label>
                         <select name="payment_method" id="payment_method" class="w-full border rounded px-3 py-2 text-black" required>
-                            <option value="">Select Payment Method</option>
                             <option value="paypal" selected>PayPal</option>
-                            <option value="credit_card">Credit Card</option>
-                            <option value="cash">Cash</option>
                         </select>
                     </div>
 
