@@ -85,12 +85,20 @@ class RentalController extends Controller
      */
     public function reservationHistory()
     {
-        $userId = Auth::id();
-        $userRentals = Rental::with('payments')
+        $user = Auth::user();
+        $userId = $user->id;
+        $userType = 'other';
+        if ($user->email === 'admin@example.com') {
+            $userType = 'admin';
+        } elseif ($user->email === 'user@example.com') {
+            $userType = 'user';
+        }
+
+        $userRentals = Rental::with(['payments', 'car'])
             ->where('user_id', $userId)
             ->orderBy('start_date', 'desc')
             ->get();
-        return view('reservation.history', ['pastRentals' => $userRentals]);
+        return view('reservation.history', ['pastRentals' => $userRentals, 'userType' => $userType]);
     }
 
     /**
@@ -114,6 +122,27 @@ class RentalController extends Controller
             'status' => 'required|string',
         ]);
 
+        $user = Auth::user();
+
+        // Check reservation restrictions for regular users
+        if ($user->email !== 'admin@example.com') {
+            $overlappingRental = \App\Models\Rental::where('user_id', $user->id)
+                ->where('car_id', $request->car_id)
+                ->where(function ($query) use ($request) {
+                    $query->whereBetween('start_date', [$request->start_date, $request->end_date])
+                          ->orWhereBetween('end_date', [$request->start_date, $request->end_date])
+                          ->orWhere(function ($q) use ($request) {
+                              $q->where('start_date', '<=', $request->start_date)
+                                ->where('end_date', '>=', $request->end_date);
+                          });
+                })
+                ->exists();
+
+            if ($overlappingRental) {
+                return redirect()->back()->withErrors(['error' => 'You can only reserve the same car with non-overlapping rental dates.']);
+            }
+        }
+
         $startDate = new \DateTime($request->start_date);
         $endDate = new \DateTime($request->end_date);
         $interval = $startDate->diff($endDate);
@@ -122,7 +151,7 @@ class RentalController extends Controller
         // Create rental
         $rental = \App\Models\Rental::create([
             'car_id' => $request->car_id,
-            'user_id' => Auth::id(),
+            'user_id' => $user->id,
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'total_price' => $request->amount,

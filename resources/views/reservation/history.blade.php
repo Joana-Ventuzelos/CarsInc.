@@ -14,6 +14,7 @@
                     <table class="min-w-full bg-white dark:bg-gray-800">
                         <thead>
                             <tr>
+                                <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">User Type</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Car</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Features</th>
                                 <th class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">Start Date</th>
@@ -26,6 +27,9 @@
                         <tbody>
                             @foreach($pastRentals as $rental)
                                 <tr>
+                                    <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
+                                        {{ $userType }}
+                                    </td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
                                         {{ optional($rental->car)->brand ?? 'N/A' }} {{ optional($rental->car)->model ?? '' }}
                                     </td>
