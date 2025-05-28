@@ -50,6 +50,7 @@
                     <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
                     <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Search</button>
                     <a href="{{ route('rental.create') }}" id="payment-button" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Payment</a>
+                    <a href="{{ route('reservation.history') }}" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded ml-2">Rentals</a>
                 </form>
                 @if($cars->isEmpty())
                     <p>No rentals available.</p>
