@@ -66,10 +66,7 @@
                 </form>
             </div>
             <div class="mb-4 flex justify-end">
-                <a href="{{ route('reservation.history') }}"
-                   class="px-4 py-2 bg-yellow-700 hover:bg-yellow-800 text-black font-semibold rounded transition ml-auto">
-                    Ver Reservas
-                </a>
+                <!-- Removed the "Ver Reservas" button as requested -->
             </div>
         </div>
 
