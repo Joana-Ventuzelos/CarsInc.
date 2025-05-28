@@ -48,7 +48,14 @@
                     <input type="text" name="brand" value="{{ request('brand') }}" placeholder="Brand" class="border rounded py-2 px-3 mr-2">
                     <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
                     <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
+                    <select id="car-select" class="border rounded py-2 px-3 mr-2" required>
+                        <option value="">Select a car</option>
+                        @foreach($cars as $car)
+                            <option value="{{ $car->id }}">{{ $car->brand }} {{ $car->model }} ({{ $car->license_plate }}) - €{{ number_format($car->price_per_day, 2) }}/day</option>
+                        @endforeach
+                    </select>
                     <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Search</button>
+                    <a href="#" id="payment-button" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Payment</a>
                 </form>
                 @if($cars->isEmpty())
                     <p>No rentals available.</p>
@@ -67,7 +74,7 @@
                                     {{ $car->brand }} {{ $car->model }}
                                 </a>
                                 <p>License Plate: {{ $car->license_plate }}</p>
-<p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
+                                <p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
                                 <p>Status:
                                     @if($car->is_available)
                                         <span class="text-yellow-800">Available</span>
@@ -83,9 +90,6 @@
                                     @endforeach
                                 </div>
                                 <div class="mt-4">
-                                    <a href="{{ route('rental.create', ['rental_id' => $car->id]) }}" class="inline-block bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded">
-                                        Payment
-                                    </a>
                                 </div>
                             </div>
                         @endforeach
@@ -98,4 +102,18 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.getElementById('payment-button').addEventListener('click', function(event) {
+            event.preventDefault();
+            const carSelect = document.getElementById('car-select');
+            const selectedCarId = carSelect.value;
+            if (!selectedCarId) {
+                alert('Please select a car to proceed with payment.');
+                return;
+            }
+            const url = "{{ route('rental.create') }}" + "?rental_id=" + selectedCarId;
+            window.location.href = url;
+        });
+    </script>
 </x-app-layout>
