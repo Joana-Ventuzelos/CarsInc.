@@ -77,14 +77,14 @@
                     </div>
 
                     <button type="submit"
-                        class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition w-full">
+                        class="px-4 py-2 bg-yellow-700 text-black rounded hover:bg-yellow-800 transition w-full">
                         Proceed to PayPal
                     </button>
                 </form>
             </div>
             <div class="mb-4 flex justify-end">
                 <a href="{{ route('reservation.history') }}"
-                   class="px-4 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold rounded transition ml-auto">
+                   class="px-4 py-2 bg-yellow-700 hover:bg-yellow-800 text-black font-semibold rounded transition ml-auto">
                     Ver Reservas
                 </a>
             </div>

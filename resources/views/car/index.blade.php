@@ -128,7 +128,7 @@
                                     @endif
                                 </div>
                                 @if($car->is_available)
-                                    <a href="{{ route('rental.create', ['car_id' => $car->id]) }}" class="mt-2 inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                    <a href="{{ route('rental.create', ['car_id' => $car->id]) }}" class="mt-2 inline-block bg-yellow-700 hover:bg-yellow-800 text-black font-bold py-2 px-4 rounded">
                                         Reservar
                                     </a>
                                 @else
