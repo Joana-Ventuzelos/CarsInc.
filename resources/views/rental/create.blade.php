@@ -26,23 +26,6 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="features" class="block font-bold mb-2">Features</label>
-                        <textarea id="features" name="features" class="w-full border rounded px-3 py-2 text-black" rows="3" readonly>
-                            @if(request('car_id'))
-                                @php
-                                    $selectedCar = $cars->firstWhere('id', request('car_id'));
-                                @endphp
-                                @if($selectedCar)
-                                    Brand: {{ $selectedCar->brand }}
-                                    Model: {{ $selectedCar->model }}
-                                    License Plate: {{ $selectedCar->license_plate }}
-                                    Price per Day: €{{ number_format($selectedCar->price_per_day, 2) }}
-                                @endif
-                            @endif
-                        </textarea>
-                    </div>
-
-                    <div class="mb-4">
                         <label for="start_date" class="block font-bold mb-2">Start Date</label>
                         <input type="date" name="start_date" id="start_date" class="w-full border rounded px-3 py-2 text-black" value="{{ old('start_date', date('Y-m-d')) }}" required>
                     </div>
