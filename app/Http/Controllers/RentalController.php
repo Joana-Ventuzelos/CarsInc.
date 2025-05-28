@@ -103,25 +103,36 @@ class RentalController extends Controller
     {
         $request->validate([
             'car_id' => 'required|exists:cars,id',
-            'days' => 'required|integer|min:1',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'amount' => 'required|numeric|min:0.01',
+            'payment_method' => 'required|string',
+            'status' => 'required|string',
         ]);
 
-        // Create rental
-       $rental = \App\Models\Rental::create([
-    'car_id' => $request->car_id,
-    'user_id' => Auth::id(),
-    'start_date' => now(),
-    'end_date' => now()->addDays((int) $request->days)->toDateTimeString(), // cast to int
-    'total_price' => $request->amount,
-]);
+        $startDate = new \DateTime($request->start_date);
+        $endDate = new \DateTime($request->end_date);
+        $interval = $startDate->diff($endDate);
+        $days = $interval->days + 1;
 
+        // Create rental
+        $rental = \App\Models\Rental::create([
+            'car_id' => $request->car_id,
+            'user_id' => Auth::id(),
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'total_price' => $request->amount,
+            'status' => $request->status,
+        ]);
 
         // Store rental id in session for payment association
         session(['rental_ids' => [$rental->id]]);
 
-        // Redirect to transaction page (PayPal button)
-        return redirect()->route('createTransaction');
+        // Redirect to PayPal payment processing with car_id and days
+        return redirect()->route('processTransaction', [
+            'car_id' => $request->car_id,
+            'days' => $days,
+        ]);
     }
 
     /**

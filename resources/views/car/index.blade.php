@@ -127,6 +127,15 @@
                                         <p>No characteristics available.</p>
                                     @endif
                                 </div>
+                                @if($car->is_available)
+                                    <a href="{{ route('rental.create', ['car_id' => $car->id]) }}" class="mt-2 inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                                        Reservar
+                                    </a>
+                                @else
+                                    <button disabled class="mt-2 inline-block bg-gray-400 text-white font-bold py-2 px-4 rounded cursor-not-allowed">
+                                        Reservar
+                                    </button>
+                                @endif
                             </div>
                         @endforeach
                     </div>
