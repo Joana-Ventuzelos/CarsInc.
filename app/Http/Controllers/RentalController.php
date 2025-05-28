@@ -85,8 +85,12 @@ class RentalController extends Controller
      */
     public function reservationHistory()
     {
-        $pastRentals = Rental::with('payments')->where('end_date', '<', now())->orderBy('end_date', 'desc')->get();
-        return view('reservation.history', ['pastRentals' => $pastRentals]);
+        $userId = Auth::id();
+        $userRentals = Rental::with('payments')
+            ->where('user_id', $userId)
+            ->orderBy('start_date', 'desc')
+            ->get();
+        return view('reservation.history', ['pastRentals' => $userRentals]);
     }
 
     /**
@@ -157,7 +161,7 @@ class RentalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(int $id)
     {
         // Fetch the rental by id from the database
         $rental = Rental::findOrFail($id);
@@ -169,7 +173,7 @@ class RentalController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(int $id)
     {
         // Fetch the rental by id from the database
         $rental = Rental::findOrFail($id);
@@ -182,7 +186,7 @@ class RentalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
         // Validate the request data
         $request->validate([
@@ -203,7 +207,7 @@ class RentalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
         // Fetch the rental by id from the database
         $rental = Rental::findOrFail($id);

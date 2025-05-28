@@ -1,19 +1,19 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-white leading-tight">
             Reserve Car and Pay with PayPal
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 text-white">
         <div class="max-w-xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
+            <div class="bg-gray-900 dark:bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <form method="POST" action="{{ route('rental.storeAndRedirect') }}">
                     @csrf
 
                     <div class="mb-4">
                         <label for="car_id" class="block font-bold mb-2">Choose Car</label>
-                        <select name="car_id" id="car_id" class="w-full border rounded px-3 py-2" required>
+                        <select name="car_id" id="car_id" class="w-full border rounded px-3 py-2 text-black" required>
                             <option value="">Select a car</option>
                             @foreach($cars as $car)
                                 <option value="{{ $car->id }}"
@@ -27,7 +27,7 @@
 
                     <div class="mb-4">
                         <label for="features" class="block font-bold mb-2">Features</label>
-                        <textarea id="features" name="features" class="w-full border rounded px-3 py-2" rows="3" readonly>
+                        <textarea id="features" name="features" class="w-full border rounded px-3 py-2 text-black" rows="3" readonly>
                             @if(request('car_id'))
                                 @php
                                     $selectedCar = $cars->firstWhere('id', request('car_id'));
@@ -44,17 +44,17 @@
 
                     <div class="mb-4">
                         <label for="start_date" class="block font-bold mb-2">Start Date</label>
-                        <input type="date" name="start_date" id="start_date" class="w-full border rounded px-3 py-2" value="{{ old('start_date', date('Y-m-d')) }}" required>
+                        <input type="date" name="start_date" id="start_date" class="w-full border rounded px-3 py-2 text-black" value="{{ old('start_date', date('Y-m-d')) }}" required>
                     </div>
 
                     <div class="mb-4">
                         <label for="end_date" class="block font-bold mb-2">End Date</label>
-                        <input type="date" name="end_date" id="end_date" class="w-full border rounded px-3 py-2" value="{{ old('end_date', date('Y-m-d', strtotime('+1 day'))) }}" required>
+                        <input type="date" name="end_date" id="end_date" class="w-full border rounded px-3 py-2 text-black" value="{{ old('end_date', date('Y-m-d', strtotime('+1 day'))) }}" required>
                     </div>
 
                     <div class="mb-4">
                         <label for="payment_method" class="block font-bold mb-2">Payment Method</label>
-                        <select name="payment_method" id="payment_method" class="w-full border rounded px-3 py-2" required>
+                        <select name="payment_method" id="payment_method" class="w-full border rounded px-3 py-2 text-black" required>
                             <option value="">Select Payment Method</option>
                             <option value="paypal" selected>PayPal</option>
                             <option value="credit_card">Credit Card</option>
@@ -64,7 +64,7 @@
 
                     <div class="mb-4">
                         <label for="status" class="block font-bold mb-2">Status</label>
-                        <select name="status" id="status" class="w-full border rounded px-3 py-2" required>
+                        <select name="status" id="status" class="w-full border rounded px-3 py-2 text-black" required>
                             <option value="pending" selected>Pending</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="cancelled">Cancelled</option>
@@ -73,7 +73,7 @@
 
                     <div class="mb-4">
                         <label class="block font-bold mb-2">Total Amount (€)</label>
-                        <input type="text" id="amount" name="amount" class="w-full border rounded px-3 py-2 bg-gray-100" readonly>
+                        <input type="text" id="amount" name="amount" class="w-full border rounded px-3 py-2 bg-gray-100 text-black" readonly>
                     </div>
 
                     <button type="submit"
