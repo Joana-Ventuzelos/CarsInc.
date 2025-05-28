@@ -40,11 +40,23 @@
                                 Mais popular</p>
                         </div>
                         <p class="mt-4 text-base leading-6 text-gray-600">Pagar com Cartão de teste oferecido pelo PayPal</p>
-                        <p class="mt-6 flex items-center justify-center mb-4 text-center">
-                            <span class="line-through text-2xl font-sans text-gray-500/70">10€</span>
-                            <span class="text-5xl font-bold tracking-tight text-gray-900">1€</span>
-                        </p>
+                        @if($pendingRental)
+                            <p class="mt-6 flex items-center justify-center mb-4 text-center">
+                                <span class="text-5xl font-bold tracking-tight text-gray-900">
+                                    €{{ number_format($pendingRental['amount'], 2) }}
+                                </span>
+                            </p>
+                        @else
+                            <p class="mt-6 flex items-center justify-center mb-4 text-center">
+                                <span class="line-through text-2xl font-sans text-gray-500/70">10€</span>
+                                <span class="text-5xl font-bold tracking-tight text-gray-900">1€</span>
+                            </p>
+                        @endif
                         <form action="{{ route('processTransaction') }}" method="GET">
+                            @if($pendingRental)
+                                <input type="hidden" name="car_id" value="{{ $pendingRental['car_id'] }}">
+                                <input type="hidden" name="days" value="{{ $pendingRental['days'] }}">
+                            @endif
                             <button type="submit"
                                 class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                                 Pagar com PayPal

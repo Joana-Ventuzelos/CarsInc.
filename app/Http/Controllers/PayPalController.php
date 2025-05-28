@@ -22,7 +22,8 @@ class PayPalController extends Controller
      */
     public function createTransaction()
     {
-        return view('transaction');
+        $pendingRental = session('pending_rental', null);
+        return view('transaction', ['pendingRental' => $pendingRental]);
     }
 
     /**
@@ -31,48 +32,49 @@ class PayPalController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-public function processTransaction(Request $request)
-{
-    // 1. Validate the incoming data
-   $data = $request->validate([
-    'car_id' => 'required|exists:cars,id',
-    'days' => 'required|integer|min:1',
-]);
-
-    // 2. Get the car and calculate the amount
-    $car = \App\Models\Car::findOrFail($data['car_id']);
-    $amount = $car->price_per_day * $data['days'];
-
-    // 3. Optionally, store rental info in session for later use
-    session([
-        'pending_rental' => [
-            'car_id' => $car->id,
-            'days' => $data['days'],
-            'amount' => $amount,
-        ]
+    public function processTransaction(Request $request)
+    {
+        // 1. Validate the incoming data
+       $data = $request->validate([
+        'car_id' => 'required|exists:cars,id',
+        'days' => 'required|integer|min:1',
     ]);
 
-    // 4. Create the PayPal order with the calculated amount
-    $response = $this->payPalService->createOrder(
-        route('successTransaction'),
-        route('cancelTransaction'),
-        $amount, // Pass the calculated amount
-        'EUR'
-    );
+        // 2. Get the car and calculate the amount
+        $car = \App\Models\Car::findOrFail($data['car_id']);
+        $amount = number_format($car->price_per_day * $data['days'], 2, '.', '');
 
-    if (isset($response['id']) && $response['id'] != null) {
-        foreach ($response['links'] as $link) {
-            if ($link['rel'] == 'approve') {
-                return redirect()->away($link['href']);
+        // 3. Optionally, store rental info in session for later use
+        session([
+            'pending_rental' => [
+                'car_id' => $car->id,
+                'days' => $data['days'],
+                'amount' => $amount,
+            ]
+        ]);
+
+        // 4. Create the PayPal order with the calculated amount
+        $response = $this->payPalService->createOrder(
+            route('successTransaction'),
+            route('cancelTransaction'),
+            $amount, // Pass the calculated amount
+            'EUR'
+        );
+
+        if (isset($response['id']) && $response['id'] != null) {
+            foreach ($response['links'] as $link) {
+                if ($link['rel'] == 'approve') {
+                    return redirect()->away($link['href']);
+                }
             }
+            logger()->error('Erro ao processar a transação - Links não encontrados ou formato inesperado', ['response' => $response]);
+            return redirect()->route('createTransaction')->with('error', 'Erro ao processar a transação. Por favor, tente novamente.');
+        } else {
+            logger()->error('Erro na criação da ordem de pagamento', ['response' => $response]);
+            // Redirect silently without error message
+            return redirect()->route('createTransaction');
         }
-        logger()->error('Erro ao processar a transação - Links não encontrados ou formato inesperado', ['response' => $response]);
-        return redirect()->route('createTransaction')->with('error', 'Algo deu errado.');
-    } else {
-        logger()->error('Erro na criação da ordem de pagamento', ['response' => $response]);
-        return redirect()->route('createTransaction')->with('error', $response['message'] ?? 'Algo deu errado.');
     }
-}
     /**
      * Sucesso da transação.
      *
@@ -119,7 +121,7 @@ public function processTransaction(Request $request)
     {
         return redirect()
             ->route('createTransaction')
-            ->with('error', $response['message'] ?? 'O utilizador cancelou a operação.');
+            ->with('error', $request->input('message') ?? 'O utilizador cancelou a operação.');
     }
 
     public function finishTransaction(Request $request)
