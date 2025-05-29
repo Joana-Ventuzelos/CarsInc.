@@ -23,6 +23,9 @@ class PayPalController extends Controller
     public function createTransaction()
     {
         $pendingRental = session('pending_rental', null);
+        if (!$pendingRental) {
+            return redirect()->route('reservation.history');
+        }
         return view('transaction', ['pendingRental' => $pendingRental]);
     }
 
