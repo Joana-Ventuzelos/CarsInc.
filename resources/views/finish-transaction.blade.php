@@ -30,16 +30,22 @@
                 </div>
             @endif
 
-            {{-- Botão para voltar à página inicial ou continuar navegando --}}
+            {{-- Botão para ir ao histórico de reservas --}}
             <div class="flex justify-center">
-                <a href="{{ route('createTransaction') }}"
+                <a href="{{ route('reservation.history') }}"
                     class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300 text-center">
-                    Fazer nova transação
+                    Ir para Histórico de Reservas
                 </a>
             </div>
         </div>
 
     </div>
+    <script>
+        // Redirect to reservation history immediately after page load
+        window.addEventListener('load', function() {
+            window.location.href = "{{ route('reservation.history') }}";
+        });
+    </script>
 </body>
 
 </html>

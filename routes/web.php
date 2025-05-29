@@ -36,6 +36,7 @@ Route::resource('review', ReviewController::class);
 Route::middleware(['auth'])->group(function () {
     Route::get('rental/create', [RentalController::class, 'create'])->name('rental.create');
     Route::post('rental/store-and-redirect', [RentalController::class, 'storeAndRedirect'])->name('rental.storeAndRedirect');
+    Route::get('rental/fatura/{rental}', [RentalController::class, 'fatura'])->name('rental.fatura');
 
     Route::get('/reservation-history', [ReservationHistoryController::class, 'index'])->name('reservation.history');
 

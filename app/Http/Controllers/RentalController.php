@@ -161,11 +161,17 @@ class RentalController extends Controller
         // Store rental id in session for payment association
         session(['rental_ids' => [$rental->id]]);
 
-        // Redirect to PayPal payment processing with car_id and days
-        return redirect()->route('processTransaction', [
-            'car_id' => $request->car_id,
-            'days' => $days,
-        ]);
+        // Redirect to fatura page with rental id
+        return redirect()->route('rental.fatura', ['rental' => $rental->id]);
+    }
+
+    /**
+     * Show the fatura (invoice) page for a rental.
+     */
+    public function fatura($rentalId)
+    {
+        $rental = \App\Models\Rental::with('car')->findOrFail($rentalId);
+        return view('fatura', compact('rental'));
     }
 
     /**
