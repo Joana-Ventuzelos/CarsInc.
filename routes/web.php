@@ -33,9 +33,10 @@ Route::resource('car', CarController::class);
 Route::resource('rental', RentalController::class);
 Route::resource('review', ReviewController::class);
 
-Route::get('rental/create', [RentalController::class, 'create'])->name('rental.create');
-Route::post('rental/store-and-redirect', [RentalController::class, 'storeAndRedirect'])->name('rental.storeAndRedirect');
 Route::middleware(['auth'])->group(function () {
+    Route::get('rental/create', [RentalController::class, 'create'])->name('rental.create');
+    Route::post('rental/store-and-redirect', [RentalController::class, 'storeAndRedirect'])->name('rental.storeAndRedirect');
+
     Route::get('/reservation-history', [ReservationHistoryController::class, 'index'])->name('reservation.history');
 
 Route::get('transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');

@@ -42,14 +42,7 @@
                         </select>
                     </div>
 
-                    {{-- <div class="mb-4"> --}}
-                        {{-- <label for="status" class="block font-bold mb-2">Status</label>
-                        <select name="status" id="status" class="w-full border rounded px-3 py-2 text-black" required> --}}
-                            {{-- <option value="pending" selected>Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </div> --}}
+                    <input type="hidden" name="status" value="pending" />
 
                     <div class="mb-4">
                         <label class="block font-bold mb-2">Total Amount (€)</label>
@@ -80,7 +73,7 @@
                 const startDate = new Date(startDateInput.value);
                 const endDate = new Date(endDateInput.value);
 
-                let days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                let days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
                 if (days < 1) {
                     days = 1;
                 }
