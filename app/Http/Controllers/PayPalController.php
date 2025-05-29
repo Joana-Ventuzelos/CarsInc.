@@ -20,8 +20,46 @@ class PayPalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function createTransaction()
+    public function createTransaction(Request $request)
     {
+        if ($request->has(['car_id', 'days'])) {
+            $data = $request->validate([
+                'car_id' => 'required|exists:cars,id',
+                'days' => 'required|integer|min:1',
+            ]);
+
+            $car = \App\Models\Car::findOrFail($data['car_id']);
+            $amount = number_format($car->price_per_day * $data['days'], 2, '.', '');
+
+            session([
+                'pending_rental' => [
+                    'car_id' => $car->id,
+                    'days' => $data['days'],
+                    'amount' => $amount,
+                ]
+            ]);
+
+            $response = $this->payPalService->createOrder(
+                route('successTransaction'),
+                route('cancelTransaction'),
+                $amount,
+                'EUR'
+            );
+
+            if (isset($response['id']) && $response['id'] != null) {
+                foreach ($response['links'] as $link) {
+                    if ($link['rel'] == 'approve') {
+                        return redirect()->away($link['href']);
+                    }
+                }
+                logger()->error('Erro ao processar a transação - Links não encontrados ou formato inesperado', ['response' => $response]);
+                return redirect()->route('createTransaction')->with('error', 'Erro ao processar a transação. Por favor, tente novamente.');
+            } else {
+                logger()->error('Erro na criação da ordem de pagamento', ['response' => $response]);
+                return redirect()->route('createTransaction');
+            }
+        }
+
         $pendingRental = session('pending_rental', null);
         return view('transaction', ['pendingRental' => $pendingRental]);
     }

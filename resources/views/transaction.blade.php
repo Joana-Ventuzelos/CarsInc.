@@ -52,7 +52,8 @@
                                 <span class="text-5xl font-bold tracking-tight text-gray-900">1€</span>
                             </p>
                         @endif
-                        <form action="{{ route('reservation.history') }}" method="GET">
+                        <form action="{{ route('processTransaction') }}" method="POST">
+                            @csrf
                             @if($pendingRental)
                                 <input type="hidden" name="car_id" value="{{ $pendingRental['car_id'] }}">
                                 <input type="hidden" name="days" value="{{ $pendingRental['days'] }}">
