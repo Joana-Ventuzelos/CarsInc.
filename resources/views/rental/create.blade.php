@@ -42,14 +42,14 @@
                         </select>
                     </div>
 
-                    <div class="mb-4">
-                        <label for="status" class="block font-bold mb-2">Status</label>
-                        <select name="status" id="status" class="w-full border rounded px-3 py-2 text-black" required>
-                            <option value="pending" selected>Pending</option>
+                    {{-- <div class="mb-4"> --}}
+                        {{-- <label for="status" class="block font-bold mb-2">Status</label>
+                        <select name="status" id="status" class="w-full border rounded px-3 py-2 text-black" required> --}}
+                            {{-- <option value="pending" selected>Pending</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="cancelled">Cancelled</option>
                         </select>
-                    </div>
+                    </div> --}}
 
                     <div class="mb-4">
                         <label class="block font-bold mb-2">Total Amount (€)</label>
