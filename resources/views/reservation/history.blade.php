@@ -26,6 +26,7 @@
                         </thead>
                         <tbody>
                             @foreach($pastRentals as $rental)
+                                @if($rental->status !== 'cancelled')
                                 <tr>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
                                         {{ $userType }}
@@ -61,9 +62,23 @@
                                         @endif
                                     </td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">
-                                        {{ ucfirst($rental->status ?? 'N/A') }}
+                                        @if($userType === 'admin')
+                                            <form method="POST" action="{{ route('rental.update', $rental->id) }}">
+                                                @csrf
+                                                @method('PUT')
+                                                <select name="status" onchange="this.form.submit()" class="bg-gray-100 dark:bg-gray-700 rounded px-2 py-1 text-sm">
+                                                    <option value="pending" {{ $rental->status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                                    <option value="confirmed" {{ $rental->status === 'confirmed' ? 'selected' : '' }}>Confirmed</option>
+                                                    <option value="cancelled" {{ $rental->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                                    <option value="completed" {{ $rental->status === 'completed' ? 'selected' : '' }}>Completed</option>
+                                                </select>
+                                            </form>
+                                        @else
+                                            {{ ucfirst($rental->status ?? 'N/A') }}
+                                        @endif
                                     </td>
                                 </tr>
+                                @endif
                             @endforeach
                         </tbody>
                     </table>
