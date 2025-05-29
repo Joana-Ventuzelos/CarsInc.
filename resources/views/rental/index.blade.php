@@ -65,9 +65,9 @@
                                         <div class="mb-2">
                                             <img src="{{ asset('images/' . $imageFile) }}" alt="{{ $car->brand }} {{ $car->model }}" class="rounded w-full mb-2">
                                         </div>
-                                <a href="{{ route('car.show', $car->id) }}" class="text-lg font-bold underline">
-                                    {{ $car->brand }} {{ $car->model }}
-                                </a>
+<span class="text-lg font-bold underline cursor-default text-gray-700 dark:text-gray-300">
+    {{ $car->brand }} {{ $car->model }}
+</span>
                                 <p>License Plate: {{ $car->license_plate }}</p>
                                 <p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
                                 <p>Status:
