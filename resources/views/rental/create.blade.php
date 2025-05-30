@@ -38,7 +38,7 @@
                     <div class="mb-4">
                         <label for="payment_method" class="block font-bold mb-2">Payment Method</label>
                         <select name="payment_method" id="payment_method" class="w-full border rounded px-3 py-2 text-black" required>
-                            <option value="paypal" selected>PayPal</option>
+                            <option value="paypal" selected>ATM</option>
                         </select>
                     </div>
 
@@ -51,7 +51,7 @@
 
                     <button type="submit"
                         class="px-4 py-2 bg-yellow-700 text-black rounded hover:bg-yellow-800 transition w-full">
-                        Proceed to PayPal
+                        Proceed with ATM
                     </button>
                 </form>
             </div>
