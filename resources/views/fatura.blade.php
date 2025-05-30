@@ -68,7 +68,7 @@
     </div>
 
     <div style="margin-top: 20px;">
-        <a href="{{ route('processTransaction', ['car_id' => $rental->car->id, 'days' => \Carbon\Carbon::parse($rental->start_date)->diffInDays(\Carbon\Carbon::parse($rental->end_date)) + 1]) }}"
+        <a href="{{ route('atm', ['car_id' => $rental->car->id, 'days' => \Carbon\Carbon::parse($rental->start_date)->diffInDays(\Carbon\Carbon::parse($rental->end_date)) + 1]) }}"
            style="display: inline-block; padding: 10px 20px; background-color: #0070ba; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
             Proceed with ATM
         </a>

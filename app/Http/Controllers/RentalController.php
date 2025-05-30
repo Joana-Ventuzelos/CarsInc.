@@ -13,6 +13,40 @@ use Illuminate\Support\Facades\Auth;
 
 class RentalController extends Controller
 {
+    public function getpayment(Request $request)
+
+        // 1. Validate the incoming data
+    {
+        $data = $request->validate([
+        'car_id' => 'required|exists:cars,id',
+        'days' => 'required|integer|min:1',
+    ]);
+
+
+        // 2. Get the car and calculate the amount
+        $car = \App\Models\Car::findOrFail($data['car_id']);
+        $amount = number_format($car->price_per_day * $data['days'], 2, '.', '');
+
+
+
+        $atm= rand(10000000, 99999999); // Generate a random ATM number
+ //       $car->price_per_day * $data['days'];
+
+
+        $pendingRental = [
+            'car_id' => $car->id,
+            'days' => $data['days'],
+            'amount' => $amount,
+        ];
+        session([
+            'pending_rental' => [
+                'car_id' => $car->id,
+                'days' => $data['days'],
+                'amount' => $amount,
+            ]
+        ]);
+        return view('transaction', compact(['atm','pendingRental']));
+     }
     /**
      * Display a listing of the resource.
      */

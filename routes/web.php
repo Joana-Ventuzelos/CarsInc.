@@ -39,15 +39,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('rental/fatura/{rental}', [RentalController::class, 'fatura'])->name('rental.fatura');
 
     Route::get('/reservation-history', [ReservationHistoryController::class, 'index'])->name('reservation.history');
-
-Route::get('transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
-Route::get('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
-Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
-Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
-Route::get('finish-transaction', [PayPalController::class, 'finishTransaction'])->name('finishTransaction');
 });
-require __DIR__.'/auth.php';
+// Route::get('transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+Route::get('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+// Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+// Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
+// Route::get('finish-transaction', [PayPalController::class, 'finishTransaction'])->name('finishTransaction');
 
+require __DIR__.'/auth.php';
+Route::get('atm', [RentalController::class, 'getpayment'])->name('atm');
 Route::get('/reservation-history', [\App\Http\Controllers\RentalController::class, 'reservationHistory'])->name('reservation.history');
 
 

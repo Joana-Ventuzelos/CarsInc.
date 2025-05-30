@@ -77,7 +77,7 @@
                                     class="h-6 w-5 flex-none text-blue-600">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>Referência-120111982
+                                </svg>Referência- {{$atm}}
                             </li>
                         </ul>
                     </div>
