@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="text-center text-xs text-gray-400 py-2 border-t border-gray-800 mt-4">
-                &copy; {{ date('Y') }} Cars 2.0. Todos os direitos reservados.
+                &copy; {{ date('Y') }} Cars 2.0. Todos os direitos reservados e um especial agradecimento ao Luís Mago e Ângela Peixoto.
             </div>
         </footer>
     </body>
