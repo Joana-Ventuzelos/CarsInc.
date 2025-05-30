@@ -54,7 +54,7 @@
     }
 
     a.button:hover {
-      background-color: #b00610;
+      background-color: #b08806;
     }
   </style>
 </head>
