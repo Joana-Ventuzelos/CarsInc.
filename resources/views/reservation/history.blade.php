@@ -58,7 +58,7 @@
                                         @if($rental->payments && $rental->payments->isNotEmpty())
                                             {{ ucfirst($rental->payments->first()->payment_method) }}
                                         @else
-                                            PayPal
+                                            ATM
                                         @endif
                                     </td>
                                     <td class="py-2 px-4 border-b border-gray-200 dark:border-gray-700">

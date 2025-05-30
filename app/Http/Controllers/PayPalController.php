@@ -46,6 +46,7 @@ class PayPalController extends Controller
         // 2. Get the car and calculate the amount
         $car = \App\Models\Car::findOrFail($data['car_id']);
         $amount = number_format($car->price_per_day * $data['days'], 2, '.', '');
+        $atm= $car->price_per_day * $data['days'];
 
         // 3. Optionally, store rental info in session for later use
         session([

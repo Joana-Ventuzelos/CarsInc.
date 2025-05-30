@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PayPal Checkout - Laravel</title>
+    <title>ATM</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -12,7 +12,7 @@
 <body class="bg-gray-100 p-10">
     <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md text-center">
 
-        <h2 class="text-2xl font-bold mb-4">Iniciar Pagamento com PayPal</h2>
+        <h2 class="text-2xl font-bold mb-4"> Pagamento </h2>
 
         {{-- Mensagens de Sucesso / Erro --}}
         @if (session('success'))
@@ -39,7 +39,7 @@
                                 class="rounded-full bg-blue-600/10 px-2.5 py-1 text-xs font-semibold leading-5 text-blue-600">
                                 Mais popular</p>
                         </div>
-                        <p class="mt-4 text-base leading-6 text-gray-600">Pagar com Cartão de teste oferecido pelo PayPal</p>
+                        <p class="mt-4 text-base leading-6 text-gray-600">Pagar com Multibanco</p>
                         @if($pendingRental)
                             <p class="mt-6 flex items-center justify-center mb-4 text-center">
                                 <span class="text-5xl font-bold tracking-tight text-gray-900">
@@ -59,7 +59,7 @@
                             @endif
                             <button type="submit"
                                 class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                                Pagar com PayPal
+                                Pagar
                             </button>
                         </form>
                         <ul role="list" class="mt-8 space-y-3 text-sm leading-6 text-gray-600 xl:mt-10">
@@ -69,7 +69,7 @@
                                     class="h-6 w-5 flex-none text-blue-600">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>Pagamento seguro
+                                </svg>Entidade-124021
                             </li>
                             <li class="flex gap-x-3 text-base">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -77,15 +77,7 @@
                                     class="h-6 w-5 flex-none text-blue-600">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>Pagamento único
-                            </li>
-                            <li class="flex gap-x-3 text-base">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" aria-hidden="true"
-                                    class="h-6 w-5 flex-none text-blue-600">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>Pagamento simples
+                                </svg>Referência-120111982
                             </li>
                         </ul>
                     </div>
@@ -98,8 +90,6 @@
 
 </html>
 
-
-<!-- SDK do PayPal com sua Client ID e moeda EUR -->
 <script
     src="https://www.sandbox.paypal.com/sdk/js?client-id={{ config('paypal.sandbox.client_id') }}&currency=EUR&intent=capture">
 </script>
