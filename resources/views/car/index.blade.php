@@ -126,8 +126,6 @@
                                         <p>No characteristics available.</p>
                                     @endif
                                 </div>
-                                <!-- Removed individual reservar buttons as requested -->
-                                <!-- Removed individual reservar buttons as requested -->
                             </div>
                         @endforeach
                     </div>
