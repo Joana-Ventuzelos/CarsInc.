@@ -56,7 +56,6 @@
                 </form>
             </div>
             <div class="mb-4 flex justify-end">
-                <!-- Removed the "Ver Reservas" button as requested -->
             </div>
         </div>
 
