@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-white leading-tight">
-            Reserve Car and Pay with PayPal
+            Reserve Car and Pay with ATM
         </h2>
     </x-slot>
 
