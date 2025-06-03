@@ -55,7 +55,7 @@ INSERT INTO tipo_bens (id, nome) VALUES (1, 'Carro');
 
 INSERT INTO marca (id, tipo_bem_id, nome, observacao) VALUES
 (1, 1, 'Toyota', 'A confiabilidade e eficiência japonesa que movem o mundo!'),
-(2, 1, 'Honda', 'ecnologia japonesa e eficiência compacta para levar você mais longe!'),
+(2, 1, 'Honda', 'Tecnologia japonesa e eficiência compacta para levar você mais longe!'),
 (3, 1, 'Ford', 'A tradição americana e a inovação automotiva ao seu alcance!.'),
 (4, 1, 'Volkswagen', 'Engenharia alemã, performance e conforto para qualquer destino!'),
 (5, 1, 'Renault', 'Elegância e economia francesas, sem abrir mão da qualidade!');
