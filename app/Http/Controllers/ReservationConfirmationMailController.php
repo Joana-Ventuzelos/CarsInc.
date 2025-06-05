@@ -23,8 +23,11 @@ class ReservationConfirmationMailController extends Controller
         Mail::to($email)
             ->send(new \App\Mail\ReservationConfirmationMail($clientName, $local));
 
-        // Redireciona para a rota do PDF
-        return redirect()->route('reservation.pdf', ['clientName' => $clientName]);
+        // Exibe a mesma view do email após enviar
+        return view('mail.reservation-confirmation-mail', [
+            'client' => $clientName,
+            'local' => $local,
+        ]);
     }
 
     public function generatePdf(Request $request)
@@ -94,6 +97,10 @@ class ReservationConfirmationMailController extends Controller
         Mail::to($email)
             ->send(new \App\Mail\ReservationConfirmationMail($clientName, $car->brand));
 
-        return redirect()->route('dashboard')->with('success', 'Reservation confirmation email sent successfully.');
+        // Exibe a mesma view do email após enviar
+        return view('mail.reservation-confirmation-mail', [
+            'client' => $clientName,
+            'local' => $car->brand,
+        ]);
     }
 }

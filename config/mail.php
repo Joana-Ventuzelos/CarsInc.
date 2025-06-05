@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Mailer
@@ -36,12 +35,10 @@ return [
     */
 
     'mailers' => [
-
-  'smtp' => [
+        'smtp' => [
             'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp-relay.brevo.com'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'host' => env('MAIL_HOST', 'sandbox.smtp.mailtrap.io'),
+            'port' => env('MAIL_PORT', 2525),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
@@ -93,7 +90,6 @@ return [
                 'postmark',
             ],
         ],
-
     ],
 
     /*
@@ -107,9 +103,8 @@ return [
     |
     */
 
-   'from' => [
+    'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'r.ventuzelos@gmail.com'),  #no valor padrão (entre as plicas), poderá adicionar o email cadastrado no Brevo.
         'name' => env('MAIL_FROM_NAME', 'Cars'), #no valor padrão, podemos adicionar o nome da aplicação.
     ],
-
 ];
