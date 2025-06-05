@@ -9,7 +9,6 @@ class PayPalController extends Controller
 {
     protected $payPalService;
 
-
     public function __construct(PayPalService $payPalService)
     {
         $this->payPalService = $payPalService;
@@ -26,7 +25,14 @@ class PayPalController extends Controller
         if (!$pendingRental) {
             return redirect()->route('reservation.history');
         }
-        return view('transaction', ['pendingRental' => $pendingRental]);
+        $locations = \App\Models\Localizacao::all();
+        $atm = rand(10000000, 99999999); // Generate a random reference number
+
+        return view('transaction', [
+            'pendingRental' => $pendingRental,
+            'locations' => $locations,
+            'atm' => $atm,
+        ]);
     }
 
     /**
@@ -34,19 +40,18 @@ class PayPalController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function processTransaction(Request $request)
     {
         // 1. Validate the incoming data
-       $data = $request->validate([
-        'car_id' => 'required|exists:cars,id',
-        'days' => 'required|integer|min:1',
-    ]);
+        $data = $request->validate([
+            'car_id' => 'required|exists:cars,id',
+            'days' => 'required|integer|min:1',
+        ]);
 
         // 2. Get the car and calculate the amount
         $car = \App\Models\Car::findOrFail($data['car_id']);
         $amount = number_format($car->price_per_day * $data['days'], 2, '.', '');
-        $atm= $car->price_per_day * $data['days'];
+        $atm = $car->price_per_day * $data['days'];
 
         // 3. Optionally, store rental info in session for later use
         session([
@@ -79,6 +84,7 @@ class PayPalController extends Controller
             return redirect()->route('createTransaction');
         }
     }
+
     /**
      * Sucesso da transação.
      *
@@ -86,7 +92,6 @@ class PayPalController extends Controller
      */
     public function successTransaction(Request $request)
     {
-
         $token = $request->input('token');
         // Alternativa a linha 63 seria acessar a query string
         //$token = $request['token'];
@@ -105,10 +110,7 @@ class PayPalController extends Controller
             // Redireciona para a rota de finalização com os dados de sucesso
             //Duas alternativas:
             //return redirect()->route('finishTransaction')->with('success', "Pagamento Realizado! Valor: $amount, pago por: $payerName.");
-            return redirect()->route('finishTransaction', [
-                'amount' => $amount,
-                'payer' => $payerName,
-            ]);
+            return redirect()->route('send.confirmation.form', ['car_id' => session('pending_rental.car_id')]);
         } else {
             //diferente de withError que usamos no Recaptcha: $message só existe automaticamente dentro de @error().
             //Para mensagens comuns com with(), você acessa com session('chave'); adicionamos uma mensagem simples à sessão, com a chave 'error'
@@ -133,7 +135,23 @@ class PayPalController extends Controller
         $amount = $request->query('amount');
         $payerName = $request->query('payer');
 
-        return view('finish-transaction', compact('amount', 'payerName'));
+        // Redirect to transaction confirmation view after payment
+        return redirect()->route('transaction.confirmation')->with('success', 'Payment completed.')->with('payerName', $payerName);
     }
 
+    public function showTransactionConfirmation()
+    {
+        $pendingRental = session('pending_rental', null);
+        if (!$pendingRental) {
+            return redirect()->route('reservation.history');
+        }
+        $locations = \App\Models\Localizacao::all();
+        $atm = rand(10000000, 99999999); // Generate a random reference number
+
+        return view('transaction_confirmation', [
+            'pendingRental' => $pendingRental,
+            'locations' => $locations,
+            'atm' => $atm,
+        ]);
+    }
 }

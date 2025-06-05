@@ -29,6 +29,17 @@
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+
+            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-xl flex space-x-4">
+                    <a href="{{ url('/users') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                        Users
+                    </a>
+                    <a href="{{ route('reservation.history') }}" class="px-4 py-2 bg-yellow-400 text-black rounded hover:bg-yellow-500 transition">
+                        Reservation History
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

@@ -28,6 +28,16 @@ Route::middleware('auth')->group(function () {
 Route::post('/enviar-email', [ReservationConfirmationMailController::class, 'sendReservationEmail'])
     ->middleware('auth')
     ->name('send.email');
+
+
+Route::get('/send-confirmation', [\App\Http\Controllers\ReservationConfirmationMailController::class, 'showSendConfirmationForm'])
+    ->middleware('auth')
+    ->name('send.confirmation.form');
+
+Route::post('/send-confirmation', [\App\Http\Controllers\ReservationConfirmationMailController::class, 'sendConfirmationEmail'])
+    ->middleware('auth')
+    ->name('send.confirmation.email');
+
 Route::resource('users', UserController::class);
 Route::resource('car', CarController::class);
 Route::resource('rental', RentalController::class);
@@ -36,19 +46,23 @@ Route::resource('review', ReviewController::class);
 Route::middleware(['auth'])->group(function () {
     Route::get('rental/create', [RentalController::class, 'create'])->name('rental.create');
     Route::post('rental/store-and-redirect', [RentalController::class, 'storeAndRedirect'])->name('rental.storeAndRedirect');
-    Route::get('rental/fatura/{rental}', [RentalController::class, 'fatura'])->name('rental.fatura');
 
     Route::get('/reservation-history', [ReservationHistoryController::class, 'index'])->name('reservation.history');
 });
-// Route::get('transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
-Route::get('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
-// Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
-// Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
-// Route::get('finish-transaction', [PayPalController::class, 'finishTransaction'])->name('finishTransaction');
+Route::get('transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+Route::post('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
+Route::get('finish-transaction', [PayPalController::class, 'finishTransaction'])->name('finishTransaction');
+
+Route::get('show-transaction-confirmation', [PayPalController::class, 'showTransactionConfirmation'])->name('showTransactionConfirmation');
+
+Route::get('transaction-confirmation', [PayPalController::class, 'showTransactionConfirmation'])->name('transaction.confirmation');
 
 require __DIR__.'/auth.php';
-Route::get('atm', [RentalController::class, 'getpayment'])->name('atm');
+Route::get('atm', [RentalController::class, 'getpayment'])->name('atm'); // Pagamento
 Route::get('/reservation-history', [\App\Http\Controllers\RentalController::class, 'reservationHistory'])->name('reservation.history');
+Route::get('/reservation-pdf', [ReservationConfirmationMailController::class, 'generatePdf'])->name('reservation.pdf');
 
 
 

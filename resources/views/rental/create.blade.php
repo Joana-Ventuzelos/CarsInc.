@@ -36,6 +36,17 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="location_id" class="block font-bold mb-2">Pickup Location</label>
+                        <select name="location_id" id="location_id" class="w-full border rounded px-3 py-2 text-black" required>
+                            <option value="">Select a location</option>
+                            @foreach($locations as $location)
+                                <option value="{{ $location->id }}">
+                                    {{ $location->cidade }} - {{ $location->filial }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
                         <label for="payment_method" class="block font-bold mb-2">Payment Method</label>
                         <select name="payment_method" id="payment_method" class="w-full border rounded px-3 py-2 text-black" required>
                             <option value="paypal" selected>ATM</option>

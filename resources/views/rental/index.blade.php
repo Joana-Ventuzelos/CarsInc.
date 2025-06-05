@@ -85,6 +85,9 @@
                                     @endforeach
                                 </div>
                                 <div class="mt-4">
+                                    <a href="{{ route('rental.create', ['car_id' => $car->id]) }}" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded block text-center">
+                                        Reserve
+                                    </a>
                                 </div>
                             </div>
                         @endforeach

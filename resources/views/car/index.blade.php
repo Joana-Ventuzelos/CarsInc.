@@ -49,7 +49,7 @@
                     <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
                     <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max Price" class="border rounded py-2 px-3 mr-2" min="0" step="0.01">
                     <button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Search</button>
-                    <a href="{{ route('reservation.history') }}" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded ml-2">Rental</a>
+                    <a href="{{ route('rental.create') }}" class="ml-2 bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded">Reserve a Car</a>
                 </form>
                 @if ($cars->isEmpty())
                     <p>No cars available.</p>
@@ -66,9 +66,9 @@
                                     <img src="{{ asset('images/' . $imageFile) }}"
                                         alt="{{ $car->brand }} {{ $car->model }}" class="rounded w-full mb-2">
                                 </div>
-<span class="text-lg font-bold underline cursor-default text-gray-700 dark:text-gray-300">
-    {{ $car->brand }} {{ $car->model }}
-</span>
+                                <span class="text-lg font-bold underline cursor-default text-gray-700 dark:text-gray-300">
+                                    {{ $car->brand }} {{ $car->model }}
+                                </span>
                                 <p>License Plate: {{ $car->license_plate }}</p>
                                 <p>Price per Day: €{{ number_format($car->price_per_day, 2) }}</p>
                                 <p>Status:

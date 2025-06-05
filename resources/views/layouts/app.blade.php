@@ -33,8 +33,8 @@
             </main>
         </div>
 
-        <footer class="bg-gray-900 text-gray-200 mt-12">
-            <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <footer class="bg-gray-900 text-gray-200 mt-12, pt-8">
+            <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 w-full h-full">
                 <div>
                     <h3 class="font-bold text-lg mb-2">Sobre Nós</h3>
                     <p class="text-sm max-w-xs">

@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ReservationConfirmationMail;
 use Illuminate\Http\Request;
 use App\Models\Rental;
 use App\Models\Car;
@@ -139,10 +140,11 @@ class RentalController extends Controller
      * Show the form for creating a new resource.
      */
 
-    public function create()
+    public function create(Request $request)
     {
         $cars = \App\Models\Car::where('is_available', true)->get();
-        return view('rental.create', compact('cars'));
+        $locations = \App\Models\Localizacao::all();
+        return view('rental.create', compact('cars', 'locations'));
     }
 
     public function storeAndRedirect(Request $request)
@@ -195,18 +197,27 @@ class RentalController extends Controller
         // Store rental id in session for payment association
         session(['rental_ids' => [$rental->id]]);
 
-        // Redirect to fatura page with rental id
-        return redirect()->route('rental.fatura', ['rental' => $rental->id]);
+        // Store pending rental info in session for transaction page
+        session([
+            'pending_rental' => [
+                'car_id' => $request->car_id,
+                'days' => $days,
+                'amount' => $request->amount,
+            ]
+        ]);
+
+        // Redirect to PayPal payment page
+        return redirect()->route('createTransaction');
     }
 
     /**
      * Show the fatura (invoice) page for a rental.
      */
-    public function fatura($rentalId)
-    {
-        $rental = \App\Models\Rental::with('car')->findOrFail($rentalId);
-        return view('fatura', compact('rental'));
-    }
+    // public function fatura($rentalId)
+    // {
+    //     $rental = \App\Models\Rental::with('car')->findOrFail($rentalId);
+    //     return view('fatura', compact('rental'));
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -259,18 +270,33 @@ class RentalController extends Controller
     {
         // Validate the request data
         $request->validate([
-            'rental_name' => 'required|string|max:255',
-            'rental_price' => 'required|numeric|min:0',
-            'rental_description' => 'nullable|string|max:1000',
+            'status' => 'required|string|in:pending,confirmed,cancelled,completed',
         ]);
 
         // Update the rental in the database
         $rental = Rental::findOrFail($id);
-        $rental->update($request->all());
+        $oldStatus = $rental->status;
+        $rental->status = $request->input('status');
+        $rental->save();
+
+        // If status changed to cancelled by admin, eliminate one or more cars
+        $user = Auth::user();
+        $isAdmin = $user && $user->email === 'admin@example.com';
+
+        if ($isAdmin && $oldStatus !== 'cancelled' && $rental->status === 'cancelled') {
+            // Eliminate one or more cars logic here
+            $car = $rental->car;
+            if ($car) {
+                // For example, mark car as unavailable or delete
+                $car->is_available = false;
+                $car->save();
+                // Or delete the car if required
+                // $car->delete();
+            }
+        }
 
         // Redirect to the rentals index with a success message
-        return redirect()->route('rental.index')->with('success', 'Rental updated successfully.');
-        // return view('rental.index');
+        return redirect()->route('rental.index')->with('success', 'Rental status updated successfully.');
     }
 
     /**
