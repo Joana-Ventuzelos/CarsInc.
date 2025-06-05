@@ -87,7 +87,13 @@ use Carbon\Carbon;
                     <td>{{ $endDate ?? 'N/A' }}</td>
                     <td>{{ number_format($rental->total_price ?? 0, 2) }}</td>
                     <td>{{ $paymentMethod }}</td>
-                    <td>{{ $status }}</td>
+                    <td>
+                        @if(($status ?? 'Confirmed') === 'Confirmed' || ($status ?? '') === 'Pending')
+                            <span>Confirmed</span>
+                        @else
+                            {{ $status ?? 'Confirmed' }}
+                        @endif
+                    </td>
                 </tr>
             </tbody>
         </table>
