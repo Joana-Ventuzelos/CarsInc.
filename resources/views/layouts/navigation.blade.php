@@ -16,7 +16,7 @@
                         {{ __('CarsInc.') }}
                     </x-nav-link>
                     <x-nav-link :href="route('car.index')" :active="request()->routeIs('car.index')">
-                        {{ __('Cars') }}
+                        {{ __('Reserve a Car if you want!') }}
                     </x-nav-link>
                 </div>
             </div>
