@@ -9,17 +9,11 @@
     <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <h1 class="text-2xl font-bold mb-6">Reservation Confirmation</h1>
 
-        @if(session('error'))
-            <div class="mb-4 p-4 bg-red-200 text-red-800 rounded">
-                {{ session('error') }}
-            </div>
-        @endif
-
         <form method="POST" action="{{ route('send.confirmation.email') }}">
             @csrf
 
             <div class="mb-4">
-                <label for="client_name" class="block font-semibold mb-2">Client Name</label>
+                <label for="client_name" class="block font-semibold mb-2">E-mail</label>
                 <input type="text" id="client_name" name="client_name" class="w-full border rounded px-3 py-2" required>
             </div>
 

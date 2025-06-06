@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Services\PayPalService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PayPalController extends Controller
 {
@@ -142,14 +143,30 @@ class PayPalController extends Controller
     public function showTransactionConfirmation()
     {
         $pendingRental = session('pending_rental', null);
+
         if (!$pendingRental) {
             return redirect()->route('reservation.history');
         }
+
+        $user = Auth::user();
+        // Create rental using session data
+        $rental = \App\Models\Rental::create([
+            'car_id' => $pendingRental['car_id'],
+            'user_id' => $user->id,
+            'start_date' => $pendingRental['start_date'] ?? now(),
+            'end_date' => $pendingRental['end_date'] ?? now()->addDays($pendingRental['days'] ?? 1),
+            'total_price' => $pendingRental['amount'],
+            'status' => $pendingRental['status'] ?? 'confirmed',
+        ]);
+
+        // Clear pending rental from session
+        session()->forget('pending_rental');
+
         $locations = \App\Models\Localizacao::all();
         $atm = rand(10000000, 99999999); // Generate a random reference number
 
         return view('transaction_confirmation', [
-            'pendingRental' => $pendingRental,
+            'pendingRental' => $rental,
             'locations' => $locations,
             'atm' => $atm,
         ]);

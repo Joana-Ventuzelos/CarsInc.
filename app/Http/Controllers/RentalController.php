@@ -202,6 +202,8 @@ class RentalController extends Controller
             'pending_rental' => [
                 'car_id' => $request->car_id,
                 'days' => $days,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
                 'amount' => $request->amount,
             ]
         ]);

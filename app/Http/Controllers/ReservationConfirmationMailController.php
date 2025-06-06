@@ -94,13 +94,10 @@ class ReservationConfirmationMailController extends Controller
         }
 
         // Send confirmation email
-        Mail::to($email)
+        Mail::to($clientName)
             ->send(new \App\Mail\ReservationConfirmationMail($clientName, $car->brand));
 
         // Exibe a mesma view do email após enviar
-        return view('mail.reservation-confirmation-mail', [
-            'client' => $clientName,
-            'local' => $car->brand,
-        ]);
+        return redirect()->back()->with('Success', 'Reservation confirmation email sent successfully!');
     }
 }
