@@ -235,7 +235,7 @@ class RentalController extends Controller
         Rental::create($request->all());
 
         // Redirect to the rentals index with a success message
-        return redirect()->route('rental.index')->with('success', 'Rental created successfully.');
+        return redirect()->route('car.index')->with('success', 'Rental created successfully.');
     }
 
     /**
@@ -247,7 +247,7 @@ class RentalController extends Controller
         $rental = Rental::findOrFail($id);
         // Return the view with the rental data
         // return view('rental.show', compact('rental'));
-        return view('rental.show');
+        return view('car.show');
     }
 
     /**
@@ -296,7 +296,7 @@ class RentalController extends Controller
         }
 
         // Redirect to the rentals index with a success message
-        return redirect()->route('rental.index')->with('success', 'Rental status updated successfully.');
+        return redirect()->route('car.index')->with('success', 'Rental status updated successfully.');
     }
 
     /**
