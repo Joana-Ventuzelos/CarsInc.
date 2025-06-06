@@ -109,7 +109,7 @@ class CarController extends Controller
     public function show(string $id)
     {
         $car = \App\Models\Car::with('localizacoes')->findOrFail($id);
-        
+
 
         $characteristics = $car->getCharacteristics();
 
