@@ -1,66 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# CarsInc. - Laravel Rental Car System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CarsInc. is a Laravel-based web application for managing car rentals, payments, reservations, and user accounts. It provides a modern, user-friendly interface for both customers and administrators, supporting ATM payments, reservation confirmation by email, and PDF generation for rental details.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Car Reservation:** Users can browse available cars, select rental dates, and reserve vehicles.
+- **Pickup Locations:** All available pickup locations (cidades/filiais) are shown when making a reservation.
+- **Payment Integration:** Supports ATM payment flows.
+- **Reservation Confirmation:** After payment, users select a pickup location and receive a confirmation email.
+- **PDF Generation:** Users are redirected to a downloadable PDF with all reservation details (no "N/A" values).
+- **Email Notifications:** Reservation confirmation emails are sent using SMTP (Mailtrap or Brevo/Sendinblue supported).
+- **Admin Panel:** Admins can manage cars, users, and view all reservations.
+- **Reservation History:** Users can view their past and current reservations, with links to car details.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Instructions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clone the repository and install dependencies:**
+   ```sh
+   git clone <https://github.com/Joana-Ventuzelos/CarsInc..git>
+   cd CarsInc.
+   composer install
+   npm install && npm run build
+   ```
+2. **Configure your environment:**
+   - Copy `.env.example` to `.env` and set your database and mail credentials.
+   - For Mailtrap (development):
+     ```
+     MAIL_MAILER=smtp
+     MAIL_HOST=sandbox.smtp.mailtrap.io
+     MAIL_PORT=2525
+     MAIL_USERNAME=your_mailtrap_username
+     MAIL_PASSWORD=your_mailtrap_password
+     MAIL_ENCRYPTION=tls
+     MAIL_FROM_ADDRESS=your@email.com
+     MAIL_FROM_NAME=CarsInc.
+     ```
+   - For Brevo/Sendinblue (production):
+     ```
+     MAIL_MAILER=smtp
+     MAIL_HOST=smtp-relay.brevo.com
+     MAIL_PORT=587
+     MAIL_USERNAME=your_brevo_username
+     MAIL_PASSWORD=your_brevo_password
+     MAIL_ENCRYPTION=tls
+     MAIL_FROM_ADDRESS=your@email.com
+     MAIL_FROM_NAME=CarsInc.
+     ```
+3. **Run migrations and seeders:**
+   ```sh
+   php artisan migrate --seed
+   ```
+4. **Clear and cache config:**
+   ```sh
+   php artisan config:clear
+   php artisan config:cache
+   ```
+5. **Start the development server:**
+   ```sh
+   php artisan serve
+   ```
 
-## Learning Laravel
+## Usage
+- Register or log in as a user.
+- Browse available cars and make a reservation.
+- Select a pickup location and payment method.
+- After payment, receive a confirmation email and download your reservation PDF.
+- View your reservation history and car details.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Technologies Used
+- Laravel (PHP)
+- MySQL
+- Tailwind CSS
+- ATM SDK
+- Barryvdh DomPDF (PDF generation)
+- Mailtrap/Brevo (SMTP email)
 
 ## License
+This project is open-sourced under the [MIT license](https://opensource.org/licenses/MIT).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+For any issues or contributions, please open an issue or pull request on the repository.
