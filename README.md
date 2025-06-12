@@ -23,7 +23,7 @@ CarsInc. is a Laravel-based web application for managing car rentals, payments, 
    npm install && npm run build
    ```
 2. **Configure your environment:**
-   - Copy `.env.example` to `.env` and set your database and mail credentials.
+   - Copy `.env.example` to `.env` and set your database and mail credentials. And configure the environment variables for PHPUnit.
    - For Mailtrap (development):
      ```
      MAIL_MAILER=smtp
